@@ -1,3 +1,5 @@
+import { AgentCard } from "@/components/agents/agent-card";
+
 const Page = () => {
   return (
     <div className="max-w-chat">
@@ -13,7 +15,7 @@ const Page = () => {
       </div>
 
       <div className="mt-12">
-        <h2 className="text-foreground mb-1 text-lg font-medium">Research</h2>
+        <h2 className="text-foreground mb-1 text-lg font-medium">Copywritter Agent</h2>
         <button
           className="group w-full items-end justify-start"
           type="button"
@@ -28,7 +30,7 @@ const Page = () => {
               <img
                 alt="Cloud background"
                 className="h-full w-full object-cover transition-all duration-300 group-hover:scale-105"
-                src="/banner_cloud.jpg"
+                src="/images/image-mesh-gradient.png"
               />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent dark:from-black/70 dark:via-black/20"></div>
@@ -36,11 +38,10 @@ const Page = () => {
               <div className="mt-auto flex flex-row items-end justify-between gap-2">
                 <div className="flex flex-col items-start gap-0.5 text-left">
                   <h3 className="text-2xl leading-tight font-medium text-white">
-                    Zola Research
+                    Copywritter Agent
                   </h3>
                   <p className="text-sm text-white/80">
-                    Summarizes sources, finds answers. Helps you explore any
-                    topic, fast, focused, and clear.
+                    Writes copy for your business. Adapts to your brand and tone.
                   </p>
                 </div>
                 <div className="rounded-full bg-white/20 p-2 backdrop-blur-sm">
@@ -64,14 +65,24 @@ const Page = () => {
       <div className="mt-12">
         <h2 className="text-foreground mb-1 text-lg font-medium">Featured</h2>
         <div className="grid gap-4 md:grid-cols-2">
-          <button className="bg-secondary hover:bg-accent cursor-pointer rounded-xl p-4 transition-colors">
-            <div className="flex items-center space-x-4">
-              <div className="min-w-0 flex-1 text-left">
-                <h3 className="text-foreground truncate text-base font-medium">0;1 Advisor</h3>
-                <p className="text-foreground mt-1 line-clamp-3 text-sm md:line-clamp-2">quick, lean product advice. asks the right questions. thinks like a founder.</p>
-              </div>
-            </div>
-          </button>
+          <AgentCard 
+            title="Yoda" 
+            description="Yoda is a helpful assistant that can help you with your questions with a magic tone of voice" 
+            image="https://s1.elespanol.com/2015/12/11/actualidad/actualidad_86001588_298582_1706x1280.jpg" 
+          />
+
+          <AgentCard 
+            title="Socrates" 
+            description="Talks about your goals, dreams and aspirations with Socrates himself" 
+            image="https://dialektika.org/wp-content/uploads/2023/05/Socrates.jpg.webp" 
+          />
+        </div>
+
+        <div className="mt-12 w-full flex flex-col items-center">
+          <h3 className="text-foreground mb-1 text-lg font-medium text-center">🚧 Comming soon</h3>
+          <p className="text-muted-foreground mx-auto max-w-2xl text-lg text-center">
+            We are working on it
+          </p>
         </div>
       </div>
     </div>

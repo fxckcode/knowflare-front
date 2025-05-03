@@ -27,7 +27,7 @@ export const PromptTextarea = ({
       className="w-full p-2"
     >
       <PromptInputTextarea
-        placeholder="Ask Zola anything"
+        placeholder="Ask Idle anything"
         onKeyDown={handleKeyDown}
       />
 
@@ -40,7 +40,7 @@ export const PromptTextarea = ({
                   variant="outline"
                   size="sm"
                   className="rounded-full"
-                  >
+                >
                   Open
                 </Button>
               </PopoverTrigger>

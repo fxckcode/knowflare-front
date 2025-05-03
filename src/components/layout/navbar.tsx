@@ -5,7 +5,9 @@ export const Navbar = () => {
     <header>
       <div className="px-7 py-4 flex justify-between items-center">
         <nav>
-          <span className="text-xl font-medium">Idle</span>
+          <Link href="/">
+            <span className="text-xl font-medium select-none text-gray-500">Idle</span>
+          </Link>
         </nav>
 
         <nav>
