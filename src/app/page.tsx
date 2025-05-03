@@ -23,6 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from "@/components/ui/popover";
+import { PromptTextarea } from '@/components/chat/prompt-textarea';
 
 export default function Home() {
   const [inputValue, setInputValue] = useState('');
@@ -53,50 +54,13 @@ export default function Home() {
       </h1>
 
       <div className="w-full max-w-2xl flex flex-col items-center gap-4 max-w-chat">
-        <PromptInput
-          value={inputValue}
-          onValueChange={handleInputChange}
-          onSubmit={handleSubmit} 
-          className="w-full p-2"
-        >
-          <PromptInputTextarea
-            placeholder="Ask Zola anything"
-            onKeyDown={handleKeyDown}
-          />
-        
-          <PromptInputActions className="flex justify-between items-end">
-            <div>
-              <PromptInputAction tooltip="Select Model">
-                <Popover>
-                  <PopoverTrigger>
-                    <Button variant="outline" size="sm" className="rounded-full">
-                      Open
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent>Place content for the popover here.</PopoverContent>
-                </Popover>
-
-              </PromptInputAction>
-            </div>
-
-            <PromptInputAction
-              tooltip={isLoading ? "Stop generation" : "Send message"}
-            >
-              <Button
-                variant="default"
-                size="icon"
-                className="h-9 w-9 rounded-full"
-                onClick={handleSubmit}
-              >
-                {isLoading ? (
-                  <Square className="size-5 fill-current" />
-                ) : (
-                  <ArrowUp className="size-5" />
-                )}
-              </Button>
-            </PromptInputAction>
-          </PromptInputActions>
-        </PromptInput>
+        <PromptTextarea
+          inputValue={inputValue}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          handleKeyDown={handleKeyDown}
+          isLoading={isLoading}
+        />
 
         {/* Suggestion Buttons */}
         <div className="flex flex-wrap justify-center gap-2 mt-2">

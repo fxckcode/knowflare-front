@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
+import { Toaster } from "@/components/ui/sonner";
+import "./globals.css";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +21,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Navbar />
-        <main className="max-h-[calc(100vh-60px)] overflow-hidden">  
+        <main className="max-h-[calc(100vh-60px)] overflow-hidden">
           {children}
         </main>
+        <Toaster />
       </body>
     </html>
   );
