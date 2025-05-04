@@ -1,8 +1,11 @@
-import { PromptInputAction, PromptInputActions, PromptInputTextarea } from "@/components/ui/prompt-input"
-import { PromptInput } from "@/components/ui/prompt-input"
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+"use client";
+
+import { PromptInputAction, PromptInputActions, PromptInputTextarea } from "@/components/ui/prompt-input";
+import { PromptInput } from "@/components/ui/prompt-input";
+import { Button } from "@/components/ui/button";
 import { ArrowUp, Square } from "lucide-react";
+import { ModelDropdown } from "@/components/chat/model-dropdown";
+import { useState } from "react";
 
 interface PromptTextarea {
   inputValue: string;
@@ -19,6 +22,8 @@ export const PromptTextarea = ({
   handleKeyDown,
   isLoading
 }: PromptTextarea) => {
+  const [model, setModel] = useState("gpt-4.1");
+
   return (
     <PromptInput
       value={inputValue}
@@ -34,19 +39,7 @@ export const PromptTextarea = ({
       <PromptInputActions className="flex justify-between items-end">
         <div>
           <PromptInputAction tooltip="Select Model">
-            <Popover>
-              <PopoverTrigger>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full"
-                >
-                  Open
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>Place content for the popover here.</PopoverContent>
-            </Popover>
-
+            <ModelDropdown model={model} setModel={setModel} />
           </PromptInputAction>
         </div>
 
@@ -67,6 +60,6 @@ export const PromptTextarea = ({
           </Button>
         </PromptInputAction>
       </PromptInputActions>
-    </PromptInput >
-  )
-}
+    </PromptInput>
+  );
+};

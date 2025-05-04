@@ -1,28 +1,15 @@
 'use client'; 
 import React, { useState } from 'react';
-import {
-  PromptInput,
-  PromptInputActions,
-  PromptInputAction,
-  PromptInputTextarea
-} from '@/components/ui/prompt-input';
 import { Button } from '@/components/ui/button';
 import {
-  ArrowUp,
   FileText,
   Code,
   Palette,
   BookOpen,
   Sparkles,
   Brain, 
-  GraduationCap,
-  Square
+    GraduationCap
 } from 'lucide-react';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from "@/components/ui/popover";
 import { PromptTextarea } from '@/components/chat/prompt-textarea';
 
 export default function Home() {
