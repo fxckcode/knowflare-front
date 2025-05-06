@@ -9,7 +9,7 @@ import { useState } from "react";
 
 interface PromptTextarea {
   inputValue: string;
-  handleInputChange: (value: string) => void;
+  handleInputChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleSubmit: () => void;
   handleKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
@@ -26,14 +26,14 @@ export const PromptTextarea = ({
 
   return (
     <PromptInput
-      value={inputValue}
-      onValueChange={handleInputChange}
       onSubmit={handleSubmit}
       className="w-full p-2"
     >
       <PromptInputTextarea
         placeholder="Ask Idle anything"
         onKeyDown={handleKeyDown}
+        value={inputValue}
+        onChange={handleInputChange}
       />
 
       <PromptInputActions className="flex justify-between items-end">

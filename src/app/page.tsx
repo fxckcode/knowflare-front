@@ -8,7 +8,7 @@ import {
   BookOpen,
   Sparkles,
   Brain, 
-    GraduationCap
+  GraduationCap
 } from 'lucide-react';
 import { PromptTextarea } from '@/components/chat/prompt-textarea';
 
@@ -36,14 +36,17 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 font-[family-name:var(--font-geist-sans)]">
-      <h1 className="text-3xl mb-8 text-gray-800 font-medium tracking-tight leading-[10px]">
-        What&apos;s on your mind?
-      </h1>
+      <div className="flex flex-col items-center gap-5 mb-10">
+          <div className="rounded-xl bg-neutral-900 h-[45px] w-[45px]"></div>
+          <h1 className="text-3xl text-gray-800 font-medium tracking-tight leading-[40px]">
+            What&apos;s on your mind?
+          </h1>
+      </div>
 
       <div className="w-full max-w-2xl flex flex-col items-center gap-4 max-w-chat">
         <PromptTextarea
           inputValue={inputValue}
-          handleInputChange={handleInputChange}
+          // handleInputChange={handleInputChange}
           handleSubmit={handleSubmit}
           handleKeyDown={handleKeyDown}
           isLoading={isLoading}

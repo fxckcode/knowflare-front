@@ -1,12 +1,14 @@
-import { useRef, useState } from "react";
-import { ChatCon, ChatContainer, MessageAvatartainer } from "@/components/ui/chat-container";
+import { useRef } from "react";
 import { Message, MessageAvatar, MessageContent } from "@/components/ui/message";
 import { PromptTextarea } from "@/components/chat/prompt-textarea";
 import { Markdown } from "../ui/markdown";
+import { useChat } from '@ai-sdk/react';
+import { ChatContainer } from "@/components/ui/chat-container";
 
 export const Chat = () => {
-
-
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({});
+  const autoScroll = true;
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <section className="w-full">
@@ -16,7 +18,7 @@ export const Chat = () => {
         ref={chatContainerRef}
       >
         {messages.map((message) => {
-          const isAssistant = message.role === "assistant"
+          const isAssistant = message.role === "assistant";
 
           return (
             <Message
@@ -44,16 +46,17 @@ export const Chat = () => {
                 )}
               </div>
             </Message>
-          )
+          );
         })}
       </ChatContainer>
 
       <PromptTextarea
-        inputValue={inputValue}
+        inputValue={input}
         handleInputChange={handleInputChange}
         handleSubmit={handleSubmit}
-        handleKeyDown={handleKeyDown}
+        handleKeyDown={handleSubmit}
         isLoading={isLoading}
+        // input={input}
       />
     </section>
   );
