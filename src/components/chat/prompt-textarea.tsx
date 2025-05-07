@@ -27,16 +27,17 @@ export const PromptTextarea = ({
   return (
     <PromptInput
       onSubmit={handleSubmit}
-      className="w-full p-2"
+      className="w-full"
     >
       <PromptInputTextarea
+        className="min-h-[40px] max-h-[100px]"
         placeholder="Ask Idle anything"
         onKeyDown={handleKeyDown}
         value={inputValue}
         onChange={handleInputChange}
       />
 
-      <PromptInputActions className="flex justify-between items-end">
+      <PromptInputActions className="flex justify-between items-end mt-3">
         <div>
           <PromptInputAction tooltip="Select Model">
             <ModelDropdown model={model} setModel={setModel} />

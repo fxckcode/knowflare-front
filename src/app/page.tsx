@@ -1,13 +1,11 @@
 'use client'; 
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   FileText,
   Code,
   Palette,
-  BookOpen,
   Sparkles,
-  Brain, 
   GraduationCap
 } from 'lucide-react';
 import { PromptTextarea } from '@/components/chat/prompt-textarea';
@@ -15,27 +13,26 @@ import { PromptTextarea } from '@/components/chat/prompt-textarea';
 export default function Home() {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
+
+  const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
   };
 
   const handleSubmit = () => {
-    if (!inputValue.trim()) return; // Prevent submitting empty input
+    if (!inputValue.trim()) return; 
     console.log('Submitting:', inputValue);
-    // Add your submission logic here
-    setInputValue(''); // Clear input after submission (optional)
+    setInputValue(''); 
   };
 
-  // Handle Enter key press in textarea
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevent newline on Enter
+      e.preventDefault(); 
       handleSubmit();
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 font-[family-name:var(--font-geist-sans)]">
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 font-[family-name:var(--font-geist-sans)] pb-[72px] w-full h-full">
       <div className="flex flex-col items-center gap-5 mb-10">
           <div className="rounded-xl bg-neutral-900 h-[45px] w-[45px]"></div>
           <h1 className="text-3xl text-gray-800 font-medium tracking-tight leading-[40px]">
@@ -43,10 +40,10 @@ export default function Home() {
           </h1>
       </div>
 
-      <div className="w-full max-w-2xl flex flex-col items-center gap-4 max-w-chat">
+      <div className="w-full max-w-2xl flex flex-col items-center gap-4 max-w-chat !px-0 sm:px-4">
         <PromptTextarea
           inputValue={inputValue}
-          // handleInputChange={handleInputChange}
+          handleInputChange={handleInputChange}
           handleSubmit={handleSubmit}
           handleKeyDown={handleKeyDown}
           isLoading={isLoading}
@@ -68,20 +65,10 @@ export default function Home() {
             <Palette className="h-4 w-4" />
             Design
           </Button>
-          
-          <Button variant="outline" size="lg" className="rounded-full text-gray-600 border-gray-200 bg-white hover:bg-gray-50 text-xs h-10 px-2 flex items-center gap-1.5">
-            <BookOpen className="h-4 w-4" />
-            Research
-          </Button>
 
           <Button variant="outline" size="lg" className="rounded-full text-gray-600 border-gray-200 bg-white hover:bg-gray-50 text-xs h-10 px-2 flex items-center gap-1.5">
             <Sparkles className="h-4 w-4" />
             Get Inspired
-          </Button>
-
-          <Button variant="outline" size="lg" className="rounded-full text-gray-600 border-gray-200 bg-white hover:bg-gray-50 text-xs h-10 px-2 flex items-center gap-1.5">
-            <Brain className="h-4 w-4" />
-            Think Deeply
           </Button>
 
           <Button variant="outline" size="lg" className="rounded-full text-gray-600 border-gray-200 bg-white hover:bg-gray-50 text-xs h-10 px-2 flex items-center gap-1.5">

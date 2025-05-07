@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Navbar />
-        <main className="max-h-[calc(100vh-60px)] overflow-hidden">
+        <main className="max-h-[calc(100vh-72px)] overflow-hidden">
           {children}
         </main>
         <Toaster />
