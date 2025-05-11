@@ -1,17 +1,13 @@
 import Link from "next/link";
+import { NavAgent } from "./nav-agent";
+import { NavLogo } from "./nav-logo";
 
 export const Navbar = () => {
   return (
-    <header>
+    <header className="max-h-[72px]">
       <div className="px-7 py-4 flex justify-between items-center">
-        <nav>
-          <Link href="/">
-            <span className="text-xl font-medium select-none text-gray-500 flex items-center gap-2">
-              Idle
-              <span className="text-gray-500 border border-gray-500 rounded-full px-2 py-1 text-xs">Experimental</span>  
-            </span>
-          </Link>
-        </nav>
+        <NavLogo />
+        <NavAgent />
 
         <nav>
           <Link href="/agents">

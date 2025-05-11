@@ -6,13 +6,14 @@ interface AgentCardProps {
   title: string;
   description: string;
   image: string;
+  agentName: string;
 }
 
-export const AgentCard = ({ title, description, image }: AgentCardProps) => {
+export const AgentCard = ({ title, description, image, agentName }: AgentCardProps) => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/chat?prompt=${description}`);
+    router.push(`/chat?agent=${agentName}`);
   };
 
   return (

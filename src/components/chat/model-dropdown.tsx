@@ -47,7 +47,7 @@ export const ModelDropdown = ({ model, setModel }: ModelDropdownProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Button variant="outline" className="rounded-full">
           {setModelName(model)?.name}
           <ChevronDown className="size-5" />

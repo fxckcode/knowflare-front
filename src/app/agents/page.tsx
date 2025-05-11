@@ -1,11 +1,12 @@
 import { AgentCard } from "@/components/agents/agent-card";
+import { agents } from "@/lib/agents";
 
 const Page = () => {
   return (
     <div className="max-w-chat">
       <div className="mb-12 text-center">
         <h1 className="text-foreground text-sm font-medium">Agents</h1>
-        <div className="text-foreground mx-auto my-4 max-w-2xl text-3xl font-medium tracking-tight md:text-5xl">
+        <div className="text-foreground mx-auto my-4 max-w-2xl text-3xl font-bold tracking-tight md:text-5xl">
           Your every day AI assistant
         </div>
         <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
@@ -65,23 +66,15 @@ const Page = () => {
       <div className="mt-12">
         <h2 className="text-foreground mb-1 text-lg font-medium">Featured</h2>
         <div className="grid gap-4 md:grid-cols-2">
-          <AgentCard
-            title="n8n Agent"
-            description="Automate your workflows with n8n"
-            image="/images/agents/n8n-agent.png"
-          />
-
-          <AgentCard
-            title="Yoda"
-            description="Yoda is a helpful assistant that can help you with your questions with a magic tone of voice"
-            image="https://s1.elespanol.com/2015/12/11/actualidad/actualidad_86001588_298582_1706x1280.jpg"
-          />
-
-          <AgentCard
-            title="Socrates"
-            description="Talks about your goals, dreams and aspirations with Socrates himself"
-            image="https://dialektika.org/wp-content/uploads/2023/05/Socrates.jpg.webp"
-          />
+          {agents.map((agent) => (
+            <AgentCard
+              key={agent.agentName}
+              title={agent.name}
+              description={agent.description}
+              image={agent.image}
+              agentName={agent.agentName}
+            />
+          ))}
         </div>
 
         <div className="mt-12 w-full flex flex-col items-center">

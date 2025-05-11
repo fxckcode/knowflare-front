@@ -2,29 +2,42 @@
 
 import { PromptTextarea } from '@/components/chat/prompt-textarea';
 import { useState, useRef, useEffect, KeyboardEvent } from 'react';
-import { Message, MessageActions, MessageContent } from '@/components/ui/message';
 import { ChatContainer } from '@/components/ui/chat-container';
-import { Markdown } from '@/components/ui/markdown';
-import { cn } from '@/lib/utils';
 import { useChat } from '@ai-sdk/react';
-import { Copy } from 'lucide-react';
-import { Check } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { useSearchParams } from 'next/navigation';
-import { TextShimmer } from '../ui/text-shimmer';
+import { TextShimmer } from '@/components/ui/text-shimmer';
 import { Models } from '@/lib/types';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageAssistant } from './message-assistant';
+import { MessageUser } from './message-user';
+import { systemPrompts } from '@/ai/prompts';
+import { useAgent } from '@/stores/use-agent';
+import { agents } from '@/lib/agents';
 
 export const Chat = () => {
-  const { messages, input, handleInputChange, handleSubmit, status, append } = useChat({
-    body: {
-      model: globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17
-    }
-  });
+
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const [isArtifactPanelOpen, setIsArtifactPanelOpen] = useState(false);
+  const { setAgent } = useAgent();
+  const [agentPrompt, setAgentPrompt] = useState<string | null>(null);
+
+  const handleSelectAgent = (agentName: string) => {
+    if (!agentName) return;
+
+    const selectedAgent = agents.filter(agent => agent.agentName === agentName);
+    setAgent(selectedAgent[0] || null);
+    setAgentPrompt(systemPrompts[agentName as keyof typeof systemPrompts]);
+  };
+
+  const { messages, input, handleInputChange, handleSubmit, status, append } = useChat({
+    body: {
+      model: globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17,
+      agent: agentPrompt
+    }
+  });
 
   useEffect(() => {
     const prompt = searchParams.get("prompt");
@@ -34,6 +47,13 @@ export const Chat = () => {
 
     if (!isMessageExists) {
       append({ role: "user", content: prompt });
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const agentName = searchParams.get("agent");
+    if (agentName) {
+      handleSelectAgent(agentName);
     }
   }, [searchParams]);
 
@@ -74,14 +94,15 @@ export const Chat = () => {
   };
 
   return (
-    <div className="flex w-full h-[calc(100vh-92px)] overflow-hidden">
+    <div className="flex w-full h-[calc(100vh-72px)] overflow-hidden">
       <motion.section
         className="flex flex-col items-stretch h-full relative"
         variants={chatVariants}
+        initial="closed"
         animate={isArtifactPanelOpen ? "open" : "closed"}
         transition={panelTransition}
       >
-        <div className="w-full max-w-chat mx-auto flex flex-col flex-1 h-full">
+        <div className="w-full max-w-chat mx-auto flex flex-col flex-1 h-full pb-[16px]">
           <ChatContainer
             className="flex-1 space-y-4 px-2 md:p-4 no-scrollbar"
             autoScroll={true}
@@ -89,39 +110,27 @@ export const Chat = () => {
           >
             {messages.map((message) => {
               const isAssistant = message.role === "assistant";
+              console.log('MESSAGE', message);
+
+              if (isAssistant) {
+                return (
+                  <MessageAssistant
+                    key={message.id}
+                    message={message}
+                    handleCopy={handleCopy}
+                    copiedMessageId={copiedMessageId}
+                    parts={message.parts}
+                  />
+                );
+              }
 
               return (
-                <Message
+                <MessageUser
                   key={message.id}
-                  className={cn(
-                    "group",
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  )}
-                >
-                  <div className={cn("max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col")}>
-                    {isAssistant ? (
-                      <div className="bg-transparent text-foreground prose rounded-lg p-2">
-                        <Markdown className="message-content">
-                          {message.content}
-                        </Markdown>
-                      </div>
-                    ) : (
-                      <MessageContent className="bg-secondary text-foreground px-[14px]">
-                        {message.content}
-                      </MessageContent>
-                    )}
-
-                    <MessageActions className={cn("self-end md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-full", message.role === "user" ? "justify-end hidden md:flex" : "justify-start")}>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleCopy(message.content, message.id)}
-                      >
-                        {copiedMessageId === message.id ? <Check className="text-green-500" /> : <Copy />}
-                      </Button>
-                    </MessageActions>
-                  </div>
-                </Message>
+                  message={message}
+                  handleCopy={handleCopy}
+                  copiedMessageId={copiedMessageId}
+                />
               );
             })}
             {status === "submitted" &&

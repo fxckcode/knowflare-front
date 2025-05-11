@@ -1,5 +1,8 @@
-import { createGoogleGenerativeAI, GoogleGenerativeAIProviderOptions } from "@ai-sdk/google";
-import { streamText } from "ai";
+import {
+  createGoogleGenerativeAI,
+  GoogleGenerativeAIProviderOptions
+} from '@ai-sdk/google';
+import { streamText } from 'ai';
 
 export const maxDuration = 60;
 
@@ -8,11 +11,10 @@ const google = createGoogleGenerativeAI({
 });
 
 export async function POST(req: Request) {
-  const { messages, model } = await req.json();
-
+  const { messages, model, agent } = await req.json();
   const result = streamText({
     model: google(model),
-    system: 'You are a helpful assistant.',
+    system: agent,
     messages,
     temperature: 0.7,
     providerOptions: {
