@@ -5,13 +5,13 @@ import { PromptInput } from "@/components/ui/prompt-input";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, Square } from "lucide-react";
 import { ModelDropdown } from "@/components/chat/model-dropdown";
-import { useState } from "react";
+import { ChangeEvent, KeyboardEvent, useState } from "react";
 
 interface PromptTextarea {
   inputValue: string;
-  handleInputChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleInputChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   handleSubmit: () => void;
-  handleKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  handleKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
 }
 
@@ -22,7 +22,12 @@ export const PromptTextarea = ({
   handleKeyDown,
   isLoading
 }: PromptTextarea) => {
-  const [model, setModel] = useState("gpt-4.1");
+  const [model, setModel] = useState(globalThis?.localStorage?.getItem("model") || "gpt-4.1");
+
+  const handleModelChange = (model: string) => {
+    setModel(model);
+    globalThis?.localStorage?.setItem("model", model);
+  };
 
   return (
     <PromptInput
@@ -40,7 +45,7 @@ export const PromptTextarea = ({
       <PromptInputActions className="flex justify-between items-end mt-3">
         <div>
           <PromptInputAction tooltip="Select Model">
-            <ModelDropdown model={model} setModel={setModel} />
+            <ModelDropdown model={model} setModel={handleModelChange} />
           </PromptInputAction>
         </div>
 

@@ -1,13 +1,23 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 
 interface AgentCardProps {
   title: string;
   description: string;
   image: string;
+  agentName: string;
 }
 
-export const AgentCard = ({ title, description, image }: AgentCardProps) => {
+export const AgentCard = ({ title, description, image, agentName }: AgentCardProps) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/chat?agent=${agentName}`);
+  };
+
   return (
-    <button className="bg-secondary hover:bg-accent cursor-pointer rounded-xl p-4 transition-colors">
+    <button onClick={handleClick} className="bg-secondary hover:bg-accent cursor-pointer rounded-xl p-4 transition-colors">
       <div className="flex items-center space-x-4">
         <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
           <img src={image} alt={title} className="w-[60px] h-[60px] rounded-full object-cover" />

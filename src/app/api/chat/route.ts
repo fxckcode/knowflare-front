@@ -1,5 +1,8 @@
-import { createGoogleGenerativeAI, GoogleGenerativeAIProviderOptions } from "@ai-sdk/google";
-import { streamText } from "ai";
+import {
+  createGoogleGenerativeAI,
+  GoogleGenerativeAIProviderOptions
+} from '@ai-sdk/google';
+import { streamText } from 'ai';
 
 export const maxDuration = 60;
 
@@ -8,12 +11,12 @@ const google = createGoogleGenerativeAI({
 });
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
-
+  const { messages, model, agent } = await req.json();
   const result = streamText({
-    model: google('gemini-2.5-flash-preview-04-17'),
-    system: 'You are a helpful assistant.',
+    model: google(model),
+    system: agent,
     messages,
+    temperature: 0.7,
     providerOptions: {
       google: {
         thinkingConfig: {
@@ -23,7 +26,5 @@ export async function POST(req: Request) {
     }
   });
 
-  console.log(result);
-  
   return result.toDataStreamResponse();
 }

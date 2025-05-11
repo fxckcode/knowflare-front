@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Models } from "@/lib/types";
 
 interface ModelDropdownProps {
   model: string;
@@ -18,19 +19,25 @@ export const ModelDropdown = ({ model, setModel }: ModelDropdownProps) => {
       name: "GPT-4.1",
       provider: "OpenAI",
       description: "OpenAI’s most powerful model. Excellent at coding, writing, and complex tasks.",
-      value: "gpt-4.1"
+      value: Models.GPT_4
+    },
+    {
+      name: "GPT-4o",
+      provider: "OpenAI",
+      description: "OpenAI’s most powerful model. Excellent at coding, writing, and complex tasks.",
+      value: Models.GPT_4O
     },
     {
       name: "Gemini 2.5 Pro",
       provider: "Google",
       description: "Advanced reasoning, coding, and multimodal understanding.",
-      value: "gemini-2.5-pro-preview-03-25"
+      value: Models.GEMINI_2_5_PRO_PREVIEW_03_25
     },
     {
       name: "Gemini 2.5 Flash",
       provider: "Google",
       description: "Advanced reasoning, coding, and multimodal understanding.",
-      value: "gemini-2.5-flash-preview-04-17"
+      value: Models.GEMINI_2_5_FLASH_PREVIEW_04_17
     }
   ];
 
@@ -48,7 +55,11 @@ export const ModelDropdown = ({ model, setModel }: ModelDropdownProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-w-[300px] rounded-xl">
         {models.map((model) => (
-          <DropdownMenuItem key={model.value} onClick={() => setModel(model.value)} className="rounded-lg cursor-pointer">
+          <DropdownMenuItem
+            key={model.value}
+            onClick={() => setModel(model.value)}
+            className="rounded-lg cursor-pointer"
+          >
             <div className="flex items-center gap-3">
               {model.provider === "OpenAI" && (
                 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" className="size-5">
