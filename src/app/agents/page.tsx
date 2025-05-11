@@ -65,16 +65,22 @@ const Page = () => {
       <div className="mt-12">
         <h2 className="text-foreground mb-1 text-lg font-medium">Featured</h2>
         <div className="grid gap-4 md:grid-cols-2">
-          <AgentCard 
-            title="Yoda" 
-            description="Yoda is a helpful assistant that can help you with your questions with a magic tone of voice" 
-            image="https://s1.elespanol.com/2015/12/11/actualidad/actualidad_86001588_298582_1706x1280.jpg" 
+          <AgentCard
+            title="n8n Agent"
+            description="Automate your workflows with n8n"
+            image="/images/agents/n8n-agent.png"
           />
 
-          <AgentCard 
-            title="Socrates" 
-            description="Talks about your goals, dreams and aspirations with Socrates himself" 
-            image="https://dialektika.org/wp-content/uploads/2023/05/Socrates.jpg.webp" 
+          <AgentCard
+            title="Yoda"
+            description="Yoda is a helpful assistant that can help you with your questions with a magic tone of voice"
+            image="https://s1.elespanol.com/2015/12/11/actualidad/actualidad_86001588_298582_1706x1280.jpg"
+          />
+
+          <AgentCard
+            title="Socrates"
+            description="Talks about your goals, dreams and aspirations with Socrates himself"
+            image="https://dialektika.org/wp-content/uploads/2023/05/Socrates.jpg.webp"
           />
         </div>
 

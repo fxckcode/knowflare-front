@@ -1,4 +1,5 @@
-'use client'; 
+'use client';
+
 import React, { ChangeEvent, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,44 +10,45 @@ import {
   GraduationCap
 } from 'lucide-react';
 import { PromptTextarea } from '@/components/chat/prompt-textarea';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
   };
 
-  const handleSubmit = () => {
-    if (!inputValue.trim()) return; 
+  const handleSubmitChat = () => {
+    if (!inputValue.trim()) return;
     console.log('Submitting:', inputValue);
-    setInputValue(''); 
+    router.push(`/chat?prompt=${inputValue}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); 
-      handleSubmit();
+      e.preventDefault();
+      handleSubmitChat();
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 font-[family-name:var(--font-geist-sans)] pb-[72px] w-full h-full">
       <div className="flex flex-col items-center gap-5 mb-10">
-          <div className="rounded-xl bg-neutral-900 h-[45px] w-[45px]"></div>
-          <h1 className="text-3xl text-gray-800 font-medium tracking-tight leading-[40px]">
-            What&apos;s on your mind?
-          </h1>
+        <div className="rounded-xl bg-neutral-900 h-[45px] w-[45px]"></div>
+        <h1 className="text-3xl text-gray-800 font-medium tracking-tight leading-[40px]">
+          What&apos;s on your mind?
+        </h1>
       </div>
 
       <div className="w-full max-w-2xl flex flex-col items-center gap-4 max-w-chat !px-0 sm:px-4">
         <PromptTextarea
           inputValue={inputValue}
           handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
+          handleSubmit={handleSubmitChat}
           handleKeyDown={handleKeyDown}
-          isLoading={isLoading}
+          isLoading={false}
         />
 
         {/* Suggestion Buttons */}
@@ -55,12 +57,12 @@ export default function Home() {
             <FileText className="h-4 w-4" />
             Summary
           </Button>
-          
+
           <Button variant="outline" size="lg" className="rounded-full text-gray-600 border-gray-200 bg-white hover:bg-gray-50 text-xs h-10 px-2 flex items-center gap-1.5">
             <Code className="h-4 w-4" />
             Code
           </Button>
-          
+
           <Button variant="outline" size="lg" className="rounded-full text-gray-600 border-gray-200 bg-white hover:bg-gray-50 text-xs h-10 px-2 flex items-center gap-1.5">
             <Palette className="h-4 w-4" />
             Design

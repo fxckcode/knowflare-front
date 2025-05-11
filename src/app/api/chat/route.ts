@@ -8,12 +8,13 @@ const google = createGoogleGenerativeAI({
 });
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, model } = await req.json();
 
   const result = streamText({
-    model: google('gemini-2.5-flash-preview-04-17'),
+    model: google(model),
     system: 'You are a helpful assistant.',
     messages,
+    temperature: 0.7,
     providerOptions: {
       google: {
         thinkingConfig: {
@@ -23,7 +24,5 @@ export async function POST(req: Request) {
     }
   });
 
-  console.log(result);
-  
   return result.toDataStreamResponse();
 }
