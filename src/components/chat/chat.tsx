@@ -110,7 +110,6 @@ export const Chat = () => {
           >
             {messages.map((message) => {
               const isAssistant = message.role === "assistant";
-              console.log('MESSAGE', message);
 
               if (isAssistant) {
                 return (
