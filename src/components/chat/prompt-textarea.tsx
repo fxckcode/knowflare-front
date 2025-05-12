@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUp, Square } from "lucide-react";
 import { ModelDropdown } from "@/components/chat/model-dropdown";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
+import { Models } from "@/lib/types";
 
 interface PromptTextarea {
   inputValue: string;
@@ -22,7 +23,7 @@ export const PromptTextarea = ({
   handleKeyDown,
   isLoading
 }: PromptTextarea) => {
-  const [model, setModel] = useState(globalThis?.localStorage?.getItem("model") || "gpt-4.1");
+  const [model, setModel] = useState(globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17);
 
   const handleModelChange = (model: string) => {
     setModel(model);
@@ -46,6 +47,11 @@ export const PromptTextarea = ({
         <div>
           <PromptInputAction tooltip="Select Model">
             <ModelDropdown model={model} setModel={handleModelChange} />
+          </PromptInputAction>
+          <PromptInputAction tooltip="Select Agent">
+            <Button variant="ghost">
+
+            </Button>
           </PromptInputAction>
         </div>
 

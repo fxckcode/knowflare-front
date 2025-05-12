@@ -1,3 +1,4 @@
+import { agents } from '@/lib/agents';
 import {
   createGoogleGenerativeAI,
   GoogleGenerativeAIProviderOptions
@@ -11,11 +12,16 @@ const google = createGoogleGenerativeAI({
 });
 
 export async function POST(req: Request) {
-  const { messages, model, agent } = await req.json();
+  const { messages, model, agentName } = await req.json();
+  const currentAgent = agents.find(agent => agent.agentName === agentName);
+
   const result = streamText({
     model: google(model),
-    system: agent,
+    system:
+      currentAgent?.systemPrompt ||
+      'You are a helpful assistant. Your name is Idle.',
     messages,
+    tools: currentAgent?.tools || {},
     temperature: 0.7,
     providerOptions: {
       google: {

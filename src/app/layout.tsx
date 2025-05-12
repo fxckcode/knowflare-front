@@ -44,7 +44,7 @@ export default function RootLayout({
       <body className={montserrat.className}>
         <Navbar />
         <ViewTransition>
-          <main className="max-h-[calc(100vh-72px)] overflow-hidden">
+          <main className="overflow-hidden">
             {children}
           </main>
         </ViewTransition>

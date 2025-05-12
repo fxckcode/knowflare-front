@@ -3,7 +3,7 @@
 import { Message, MessageActions } from '@/components/ui/message';
 import { Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { Message as MessageAISDK } from 'ai';
+import type { Message as MessageAISDK, ToolInvocation } from 'ai';
 import { Markdown } from '../ui/markdown';
 
 interface MessageAssistantProps {
@@ -31,6 +31,20 @@ export const MessageAssistant = ({
       className="group justify-start"
     >
       <div className="max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col">
+        {message.toolInvocations?.map((toolInvocation: ToolInvocation) => {
+          const toolCallId = toolInvocation.toolCallId;
+          if (toolInvocation.toolName === 'showPromptInCanvas') {
+            const prompt = toolInvocation.args.prompt;
+            console.log(prompt);
+
+            return (
+              <div key={toolCallId} className="text-gray-500">
+                Calling {toolInvocation.toolName}...
+              </div>
+            );
+          }
+        })}
+
         {reasoningParts && reasoningParts.reasoning && (
           <div className="bg-transparent text-foreground px-[14px]">
             {reasoningParts.reasoning}
@@ -42,7 +56,8 @@ export const MessageAssistant = ({
           </div>
         )}
 
-        <Markdown className="bg-transparent text-foreground px-[14px]">
+
+        <Markdown className="bg-transparent text-foreground px-[14px] space-y-2.5 leading-[1lh]">
           {message.content}
         </Markdown>
 
