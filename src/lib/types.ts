@@ -1,3 +1,5 @@
+import { ToolSet } from 'ai';
+
 export enum Models {
   GPT_4 = 'gpt-4.1',
   GPT_4O = 'gpt-4o',
@@ -11,4 +13,13 @@ export type Agent = {
   description: string;
   image: string;
   agentName: string;
+  systemPrompt: string;
+  tools?: ToolSet;
+};
+
+export type Model = {
+  name: string;
+  provider: string;
+  description: string;
+  value: string;
 };

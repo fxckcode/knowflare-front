@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Models } from "@/lib/types";
+import { models } from "@/lib/agents";
 
 interface ModelDropdownProps {
   model: string;
@@ -14,33 +14,6 @@ interface ModelDropdownProps {
 }
 
 export const ModelDropdown = ({ model, setModel }: ModelDropdownProps) => {
-  const models = [
-    {
-      name: "GPT-4.1",
-      provider: "OpenAI",
-      description: "OpenAI’s most powerful model. Excellent at coding, writing, and complex tasks.",
-      value: Models.GPT_4
-    },
-    {
-      name: "GPT-4o",
-      provider: "OpenAI",
-      description: "OpenAI’s most powerful model. Excellent at coding, writing, and complex tasks.",
-      value: Models.GPT_4O
-    },
-    {
-      name: "Gemini 2.5 Pro",
-      provider: "Google",
-      description: "Advanced reasoning, coding, and multimodal understanding.",
-      value: Models.GEMINI_2_5_PRO_PREVIEW_03_25
-    },
-    {
-      name: "Gemini 2.5 Flash",
-      provider: "Google",
-      description: "Advanced reasoning, coding, and multimodal understanding.",
-      value: Models.GEMINI_2_5_FLASH_PREVIEW_04_17
-    }
-  ];
-
   const setModelName = (model: string) => {
     return models.find((m) => m.value === model);
   };
@@ -48,7 +21,7 @@ export const ModelDropdown = ({ model, setModel }: ModelDropdownProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button variant="outline" className="rounded-full">
+        <Button variant="ghost" className="rounded-full">
           {setModelName(model)?.name}
           <ChevronDown className="size-5" />
         </Button>

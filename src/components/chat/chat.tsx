@@ -7,35 +7,33 @@ import { useChat } from '@ai-sdk/react';
 import { Button } from '@/components/ui/button';
 import { useSearchParams } from 'next/navigation';
 import { TextShimmer } from '@/components/ui/text-shimmer';
-import { Models } from '@/lib/types';
+import { Agent, Models } from '@/lib/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageAssistant } from './message-assistant';
 import { MessageUser } from './message-user';
-import { systemPrompts } from '@/ai/prompts';
 import { useAgent } from '@/stores/use-agent';
 import { agents } from '@/lib/agents';
 
 export const Chat = () => {
-
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const [isArtifactPanelOpen, setIsArtifactPanelOpen] = useState(false);
   const { setAgent } = useAgent();
-  const [agentPrompt, setAgentPrompt] = useState<string | null>(null);
+  const [agentPrompt, setAgentPrompt] = useState<Agent | null>(null);
 
   const handleSelectAgent = (agentName: string) => {
     if (!agentName) return;
 
     const selectedAgent = agents.filter(agent => agent.agentName === agentName);
     setAgent(selectedAgent[0] || null);
-    setAgentPrompt(systemPrompts[agentName as keyof typeof systemPrompts]);
+    setAgentPrompt(selectedAgent[0] || null);
   };
 
   const { messages, input, handleInputChange, handleSubmit, status, append } = useChat({
     body: {
       model: globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17,
-      agent: agentPrompt
+      agentName: agentPrompt?.agentName || null
     }
   });
 
