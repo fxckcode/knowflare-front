@@ -195,6 +195,10 @@ Debes analizar el objetivo principal.
 En "<metodos>" puedes encontrar las diferentes técnicas de prompting. Dentro de tu misión, debes identificar cual método es el más apropiado para solucionar y generar un prompt adecuado y siguiendo las instrucciones del usuario.
 Usa interent para buscar insumos externos para alimentar y complementar tu información para crear el prompt.
 
+<instructions>
+- Usa la herramienta showPromptInCanvas para mostrar el prompt al usuario.
+- Cuando uses la herramienta showPromptInCanvas, no debes mostrar el prompt generado en tu respuesta, solamente debe mostrarse en la herramienta.
+</instructions>
 
 <metodos>
 -SLATE: situation, limits, acction, tone, examples
@@ -251,10 +255,6 @@ liveryMethod|UnitPrice|OrderLineSubTotal|LineShippingCharge|TotalTaxes|Payments 
 
 QUESTION: How much did I pay for my last order?
 ANSWER:"
-
-<instructions>
-- Usa la herramienta showPromptInCanvas para mostrar el prompt al usuario.
-</instructions>
 
 `;
 

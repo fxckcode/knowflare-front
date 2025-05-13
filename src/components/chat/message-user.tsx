@@ -5,14 +5,24 @@ import { cn } from '@/lib/utils';
 import { Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Message as MessageAISDK } from 'ai';
+import { useState } from 'react';
 
 interface MessageUserProps {
   message: MessageAISDK;
-  handleCopy: (content: string, messageId: string) => void;
-  copiedMessageId: string | null;
 }
 
-export const MessageUser = ({ message, handleCopy, copiedMessageId }: MessageUserProps) => {
+export const MessageUser = ({ message }: MessageUserProps) => {
+  const [copyMessage, setCopyMessage] = useState<string | null>(null);
+
+  const handleCopy = (content: string) => {
+    navigator.clipboard.writeText(content);
+    setCopyMessage(content);
+
+    setTimeout(() => {
+      setCopyMessage(null);
+    }, 2000);
+  };
+
   return (
     <Message
       key={message.id}
@@ -30,9 +40,9 @@ export const MessageUser = ({ message, handleCopy, copiedMessageId }: MessageUse
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => handleCopy(message.content, message.id)}
+            onClick={() => handleCopy(message.content)}
           >
-            {copiedMessageId === message.id ? <Check className="text-green-500" /> : <Copy />}
+            {copyMessage === message.content ? <Check className="text-green-500" /> : <Copy />}
           </Button>
         </MessageActions>
       </div>

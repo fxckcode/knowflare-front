@@ -74,7 +74,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 pb-[72px] w-full h-full">
+    <div className="flex flex-col items-center justify-center h-[calc(100dvh-72px)] px-4 pb-[72px] w-full ">
       <div className="flex flex-col items-center gap-5 mb-10">
         <div className="rounded-xl bg-neutral-900 h-[45px] w-[45px]"></div>
         <h1 className="text-3xl text-gray-800 font-medium tracking-tight leading-[40px]">

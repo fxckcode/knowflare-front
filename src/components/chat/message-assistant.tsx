@@ -5,20 +5,28 @@ import { Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Message as MessageAISDK, ToolInvocation } from 'ai';
 import { Markdown } from '../ui/markdown';
+import { useState } from 'react';
 
 interface MessageAssistantProps {
   message: MessageAISDK;
-  handleCopy: (content: string, messageId: string) => void;
-  copiedMessageId: string | null;
   parts: MessageAISDK["parts"];
 }
 
 export const MessageAssistant = ({
   message,
-  handleCopy,
-  copiedMessageId,
   parts
 }: MessageAssistantProps) => {
+  const [copyMessage, setCopyMessage] = useState<string | null>(null);
+
+  const handleCopy = (content: string) => {
+    navigator.clipboard.writeText(content);
+    setCopyMessage(content);
+
+    setTimeout(() => {
+      setCopyMessage(null);
+    }, 2000);
+  };
+
   const toolInvocationParts = parts?.filter(
     (part) => part.type === "tool-invocation"
   );
@@ -38,8 +46,8 @@ export const MessageAssistant = ({
             console.log(prompt);
 
             return (
-              <div key={toolCallId} className="text-gray-500">
-                Calling {toolInvocation.toolName}...
+              <div key={toolCallId} className="text-gray-500 mx-[14px] bg-muted rounded-md p-2">
+                Calling {toolInvocation.toolName === 'showPromptInCanvas' && 'Show Prompt in Canvas'}...
               </div>
             );
           }
@@ -65,9 +73,9 @@ export const MessageAssistant = ({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => handleCopy(message.content, message.id)}
+            onClick={() => handleCopy(message.content)}
           >
-            {copiedMessageId === message.id ? <Check className="text-green-500" /> : <Copy />}
+            {copyMessage === message.content ? <Check className="text-green-500" /> : <Copy />}
           </Button>
         </MessageActions>
       </div>

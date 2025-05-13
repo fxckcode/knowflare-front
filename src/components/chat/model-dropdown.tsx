@@ -5,7 +5,6 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { models } from "@/lib/agents";
 
 interface ModelDropdownProps {
@@ -21,10 +20,10 @@ export const ModelDropdown = ({ model, setModel }: ModelDropdownProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button variant="ghost" className="rounded-full">
+        <div className="rounded-full flex items-center gap-2 px-4 py-2 hover:bg-muted cursor-pointer text-[14px]">
           {setModelName(model)?.name}
           <ChevronDown className="size-5" />
-        </Button>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-w-[300px] rounded-xl">
         {models.map((model) => (
@@ -54,6 +53,6 @@ export const ModelDropdown = ({ model, setModel }: ModelDropdownProps) => {
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
-    </DropdownMenu>
+    </DropdownMenu >
   );
 };

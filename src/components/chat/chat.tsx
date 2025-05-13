@@ -1,26 +1,44 @@
 "use client";
 
 import { PromptTextarea } from '@/components/chat/prompt-textarea';
-import { useState, useRef, useEffect, KeyboardEvent } from 'react';
-import { ChatContainer } from '@/components/ui/chat-container';
+import { useState, useEffect, KeyboardEvent } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { Button } from '@/components/ui/button';
 import { useSearchParams } from 'next/navigation';
-import { TextShimmer } from '@/components/ui/text-shimmer';
 import { Agent, Models } from '@/lib/types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageAssistant } from './message-assistant';
-import { MessageUser } from './message-user';
 import { useAgent } from '@/stores/use-agent';
 import { agents } from '@/lib/agents';
+import { Conversation } from './conversation';
+import { ChevronRight, X } from 'lucide-react';
+
+// Custom hook to detect media queries
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const updateMatches = () => setMatches(media.matches);
+
+    // Set initial state
+    updateMatches();
+
+    // Listen for changes
+    // Using addEventListener and removeEventListener for modern browsers
+    // Fallback for older browsers might be needed if extensive support is required
+    media.addEventListener('change', updateMatches);
+    return () => media.removeEventListener('change', updateMatches);
+  }, [query]);
+
+  return matches;
+}
 
 export const Chat = () => {
-  const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const [isArtifactPanelOpen, setIsArtifactPanelOpen] = useState(false);
+  const [artifactValue, setArtifactValue] = useState<string | null>(null);
   const { setAgent } = useAgent();
   const [agentPrompt, setAgentPrompt] = useState<Agent | null>(null);
+  const isMobile = useMediaQuery('(max-width: 768px)'); // md breakpoint
 
   const handleSelectAgent = (agentName: string) => {
     if (!agentName) return;
@@ -30,10 +48,21 @@ export const Chat = () => {
     setAgentPrompt(selectedAgent[0] || null);
   };
 
-  const { messages, input, handleInputChange, handleSubmit, status, append } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, status, append, stop } = useChat({
     body: {
       model: globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17,
       agentName: agentPrompt?.agentName || null
+    },
+    async onToolCall({ toolCall }) {
+      if (toolCall.toolName === 'showPromptInCanvas') {
+        setIsArtifactPanelOpen(true);
+        setArtifactValue((toolCall.args as unknown as { prompt: string }).prompt);
+        console.log("--------------------------------");
+        console.log(toolCall.toolCallId);
+        console.log(toolCall.toolName);
+        console.log(toolCall.args);
+        console.log("--------------------------------");
+      }
     }
   });
 
@@ -55,14 +84,6 @@ export const Chat = () => {
     }
   }, [searchParams]);
 
-  const handleCopy = (content: string, messageId: string) => {
-    navigator.clipboard.writeText(content);
-    setCopiedMessageId(messageId);
-    setTimeout(() => {
-      setCopiedMessageId(null);
-    }, 1300);
-  };
-
   const toggleArtifactPanel = () => {
     setIsArtifactPanelOpen(prev => !prev);
   };
@@ -75,13 +96,33 @@ export const Chat = () => {
   };
 
   const chatVariants = {
-    open: { width: "40%", padding: "0 16px" },
-    closed: { width: "100%" }
+    open: {
+      width: isMobile ? "0%" : "40%",
+      padding: isMobile ? "0px" : "0 16px",
+      opacity: isMobile ? 0 : 1,
+      transition: { duration: isMobile ? 0.3 : 0.5, delay: isMobile && isArtifactPanelOpen ? 0 : 0.2 }
+    },
+    closed: {
+      width: "100%",
+      padding: "0 16px", // Assuming original padding when closed
+      opacity: 1,
+      transition: { duration: 0.5, delay: isMobile && !isArtifactPanelOpen ? 0.2 : 0 }
+    }
   };
 
   const panelVariants = {
-    hidden: { opacity: 0, width: "0%" },
-    visible: { opacity: 1, width: "60%" }
+    hidden: {
+      opacity: 0,
+      width: "0%",
+      padding: "0px",
+      transition: { duration: 0.3 }
+    },
+    visible: {
+      opacity: 1,
+      width: isMobile ? "100%" : "60%",
+      padding: "16px", // Default padding, adjust as needed. Was px-4 pt-9 pb-4
+      transition: { duration: 0.5, delay: 0.2 }
+    }
   };
 
   const panelTransition = {
@@ -92,7 +133,7 @@ export const Chat = () => {
   };
 
   return (
-    <div className="flex w-full h-[calc(100vh-72px)] overflow-hidden">
+    <div className="flex w-full h-[calc(100dvh-72px)] overflow-hidden">
       <motion.section
         className="flex flex-col items-stretch h-full relative"
         variants={chatVariants}
@@ -100,46 +141,10 @@ export const Chat = () => {
         animate={isArtifactPanelOpen ? "open" : "closed"}
         transition={panelTransition}
       >
-        <div className="w-full max-w-chat mx-auto flex flex-col flex-1 h-full pb-[16px]">
-          <ChatContainer
-            className="flex-1 space-y-4 px-2 md:p-4 no-scrollbar"
-            autoScroll={true}
-            ref={chatContainerRef}
-          >
-            {messages.map((message) => {
-              const isAssistant = message.role === "assistant";
-
-              if (isAssistant) {
-                return (
-                  <MessageAssistant
-                    key={message.id}
-                    message={message}
-                    handleCopy={handleCopy}
-                    copiedMessageId={copiedMessageId}
-                    parts={message.parts}
-                  />
-                );
-              }
-
-              return (
-                <MessageUser
-                  key={message.id}
-                  message={message}
-                  handleCopy={handleCopy}
-                  copiedMessageId={copiedMessageId}
-                />
-              );
-            })}
-            {status === "submitted" &&
-              messages.length > 0 &&
-              messages[messages.length - 1].role === "user" && (
-                <div className="group min-h-scroll-anchor flex w-full max-w-3xl flex-col items-start gap-2 px-6 pb-2 mx-auto">
-                  <TextShimmer className="font-mono text-sm" duration={1}>
-                    Thinking...
-                  </TextShimmer>
-                </div>
-              )}
-          </ChatContainer>
+        <div className="w-full max-w-chat mx-auto flex flex-col flex-1 h-full pb-[16px] overflow-hidden">
+          <Conversation
+            messages={messages}
+          />
 
           <PromptTextarea
             inputValue={input}
@@ -147,39 +152,26 @@ export const Chat = () => {
             handleSubmit={handleSubmit}
             handleKeyDown={handleKeyDown}
             isLoading={status === 'submitted' || status === 'streaming'}
+            stop={stop}
           />
         </div>
-        <Button
-          onClick={toggleArtifactPanel}
-          variant="outline"
-          size="sm"
-          className="absolute top-4 right-4 z-20 bg-background/80 hover:bg-background/100 backdrop-blur-sm"
-        >
-          {isArtifactPanelOpen ? "Hide Artifacts" : "Show Artifacts"}
-        </Button>
       </motion.section>
 
       <AnimatePresence>
         {isArtifactPanelOpen && (
           <motion.aside
-            className="h-full bg-muted/30 dark:bg-muted/50 backdrop-blur-md border-l border-border/80 shadow-xl"
+            className="h-full bg-white backdrop-blur-md border-l border-border/80 shadow-xl"
             variants={panelVariants}
             initial="hidden"
             animate="visible"
             exit="hidden"
             transition={panelTransition}
           >
-            <div className="p-4 h-full flex flex-col">
-              <span dangerouslySetInnerHTML={{
-                __html: `
-                # Artifacts
-
-                This panel can display code snippets, visualizations, documents, and other interactive elements related to the chat conversation.
-
-                ## Code Snippets
-
-                ## Visualizations
-              `}} />
+            <button onClick={toggleArtifactPanel} className="absolute top-3 left-4 md:left-7 z-20 cursor-pointer p-1 rounded-full hover:bg-muted">
+              <X />
+            </button>
+            <div className="p-4 h-full flex flex-col overflow-y-scroll">
+              <p>{artifactValue || ''}</p>
             </div>
           </motion.aside>
         )}
