@@ -14,6 +14,7 @@ interface PromptTextarea {
   handleSubmit: () => void;
   handleKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
+  stop?: () => void;
 }
 
 export const PromptTextarea = ({
@@ -21,7 +22,8 @@ export const PromptTextarea = ({
   handleInputChange,
   handleSubmit,
   handleKeyDown,
-  isLoading
+  isLoading,
+  stop
 }: PromptTextarea) => {
   const [model, setModel] = useState(globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17);
 
@@ -44,16 +46,9 @@ export const PromptTextarea = ({
       />
 
       <PromptInputActions className="flex justify-between items-end mt-3">
-        <div>
-          <PromptInputAction tooltip="Select Model">
-            <ModelDropdown model={model} setModel={handleModelChange} />
-          </PromptInputAction>
-          <PromptInputAction tooltip="Select Agent">
-            <Button variant="ghost">
-
-            </Button>
-          </PromptInputAction>
-        </div>
+        <PromptInputAction tooltip="Select Model">
+          <ModelDropdown model={model} setModel={handleModelChange} />
+        </PromptInputAction>
 
         <PromptInputAction
           tooltip={isLoading ? "Stop generation" : "Send message"}
@@ -62,7 +57,7 @@ export const PromptTextarea = ({
             variant="default"
             size="icon"
             className="h-9 w-9 rounded-full"
-            onClick={handleSubmit}
+            onClick={isLoading ? stop : handleSubmit}
           >
             {isLoading ? (
               <Square className="size-5 fill-current" />

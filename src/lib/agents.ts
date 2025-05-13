@@ -51,7 +51,11 @@ export const agents: Agent[] = [
             .describe(
               'The prompt to generate a prompt from your current context.'
             )
-        })
+        }),
+        execute: async ({ prompt }) => {
+          console.log('prompt', prompt);
+          return { prompt };
+        }
       }
     }
   },

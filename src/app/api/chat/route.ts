@@ -23,6 +23,7 @@ export async function POST(req: Request) {
     messages,
     tools: currentAgent?.tools || {},
     temperature: 0.7,
+    maxRetries: 1,
     providerOptions: {
       google: {
         thinkingConfig: {
