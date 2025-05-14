@@ -89,6 +89,8 @@ export default function Home() {
           handleSubmit={handleSubmitChat}
           handleKeyDown={handleKeyDown}
           isLoading={false}
+          setIsSearchGrounding={() => { }}
+          isSearchGrounding={false}
         />
 
         {/* Suggestion Buttons */}
