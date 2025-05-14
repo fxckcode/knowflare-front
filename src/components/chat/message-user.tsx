@@ -32,7 +32,7 @@ export const MessageUser = ({ message }: MessageUserProps) => {
       )}
     >
       <div className={cn("max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col")}>
-        <MessageContent className="bg-secondary text-foreground px-[14px]">
+        <MessageContent className="bg-gray-100/60 text-foreground px-[14px]">
           {message.content}
         </MessageContent>
 

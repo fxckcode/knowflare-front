@@ -9,9 +9,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAgent } from '@/stores/use-agent';
 import { agents } from '@/lib/agents';
 import { Conversation } from './conversation';
-import { ChevronRight, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
-// Custom hook to detect media queries
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);
 
@@ -19,12 +18,7 @@ function useMediaQuery(query: string): boolean {
     const media = window.matchMedia(query);
     const updateMatches = () => setMatches(media.matches);
 
-    // Set initial state
     updateMatches();
-
-    // Listen for changes
-    // Using addEventListener and removeEventListener for modern browsers
-    // Fallback for older browsers might be needed if extensive support is required
     media.addEventListener('change', updateMatches);
     return () => media.removeEventListener('change', updateMatches);
   }, [query]);
@@ -38,7 +32,8 @@ export const Chat = () => {
   const [artifactValue, setArtifactValue] = useState<string | null>(null);
   const { setAgent } = useAgent();
   const [agentPrompt, setAgentPrompt] = useState<Agent | null>(null);
-  const isMobile = useMediaQuery('(max-width: 768px)'); // md breakpoint
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const [isSearchGrounding, setIsSearchGrounding] = useState(false);
 
   const handleSelectAgent = (agentName: string) => {
     if (!agentName) return;
@@ -51,7 +46,8 @@ export const Chat = () => {
   const { messages, input, handleInputChange, handleSubmit, status, append, stop } = useChat({
     body: {
       model: globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17,
-      agentName: agentPrompt?.agentName || null
+      agentName: agentPrompt?.agentName || null,
+      isSearchGrounding
     },
     async onToolCall({ toolCall }) {
       if (toolCall.toolName === 'showPromptInCanvas') {
@@ -67,9 +63,14 @@ export const Chat = () => {
   });
 
   useEffect(() => {
+    if (status === 'ready') {
+      stop();
+    }
+  }, [status]);
+
+  useEffect(() => {
     const prompt = searchParams.get("prompt");
     if (!prompt) return;
-
     const isMessageExists = messages.some(message => message.content === prompt);
 
     if (!isMessageExists) {
@@ -144,6 +145,7 @@ export const Chat = () => {
         <div className="w-full max-w-chat mx-auto flex flex-col flex-1 h-full pb-[16px] overflow-hidden">
           <Conversation
             messages={messages}
+            status={status}
           />
 
           <PromptTextarea
@@ -153,6 +155,8 @@ export const Chat = () => {
             handleKeyDown={handleKeyDown}
             isLoading={status === 'submitted' || status === 'streaming'}
             stop={stop}
+            setIsSearchGrounding={setIsSearchGrounding}
+            isSearchGrounding={isSearchGrounding}
           />
         </div>
       </motion.section>

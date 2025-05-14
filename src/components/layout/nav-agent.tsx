@@ -11,17 +11,17 @@ export const NavAgent = () => {
   if (!agent) return null;
 
   return (
-    <nav className="flex items-center gap-2 rounded-full bg-gray-100 p-2 pr-3">
+    <nav className="flex items-center gap-2 rounded-full sm:bg-gray-100 p-2 pr-3">
       <div className="flex items-center gap-2">
         <img
           src={agent.image}
           alt={agent.name}
-          className="w-6 h-6 rounded-full object-cover"
+          className="w-6 h-6 min-w-6 min-h-6 rounded-full object-cover"
         />
       </div>
       <p className="select-none">
         <span className="hidden sm:inline">Talking with</span>
-        <strong>{' ' + agent.name}</strong>
+        <strong className="line-clamp-1">{' ' + agent.name}</strong>
       </p>
     </nav>
   );
