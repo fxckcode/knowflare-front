@@ -9,14 +9,15 @@ import { useRef } from "react";
 
 interface ConversationProps {
   messages: Message[];
+  status: 'submitted' | 'streaming' | 'ready' | 'error';
 };
 
-export const Conversation = ({ messages }: ConversationProps) => {
+export const Conversation = ({ messages, status }: ConversationProps) => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <ChatContainer
-      className="flex-1 space-y-4 px-2 md:p-4 no-scrollbar"
+      className="flex-1 space-y-4 sm:px-2 md:p-4 no-scrollbar"
       autoScroll={true}
       ref={chatContainerRef}
     >
@@ -40,15 +41,14 @@ export const Conversation = ({ messages }: ConversationProps) => {
           />
         );
       })}
-      {status === "submitted" &&
-        messages.length > 0 &&
-        messages[messages.length - 1].role === "user" && (
-          <div className="group min-h-scroll-anchor flex w-full max-w-3xl flex-col items-start gap-2 px-6 pb-2 mx-auto">
-            <TextShimmer className="font-mono text-sm" duration={1}>
-              Thinking...
-            </TextShimmer>
-          </div>
-        )}
+
+      {status === "submitted" && messages.length > 0 && (
+        <div className="group min-h-scroll-anchor flex w-full max-w-3xl flex-col items-start gap-2 px-4 pb-2 mx-auto">
+          <TextShimmer className="font-mono text-sm" duration={3}>
+            Thinking...
+          </TextShimmer>
+        </div>
+      )}
     </ChatContainer>
   );
 };

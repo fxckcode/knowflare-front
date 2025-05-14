@@ -10,7 +10,7 @@ export const NavLogo = () => {
   const isMobile = useMediaQuery("(max-width: 640px)");
 
   return isAgentPage && isMobile ? null : (
-    <nav>
+    <nav className="w-[200px]">
       <Link href="/">
         <span className="text-xl font-medium select-none text-gray-500 flex items-center gap-2">
           Idle

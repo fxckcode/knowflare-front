@@ -20,7 +20,7 @@ export const ModelDropdown = ({ model, setModel }: ModelDropdownProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <div className="rounded-full flex items-center gap-2 px-4 py-2 hover:bg-muted cursor-pointer text-[14px]">
+        <div className="rounded-lg flex items-center gap-2 px-4 py-2 hover:bg-brand-green-light/10 text-gray-500 cursor-pointer text-[14px] w-full">
           {setModelName(model)?.name}
           <ChevronDown className="size-5" />
         </div>

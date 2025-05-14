@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import type { Message as MessageAISDK, ToolInvocation } from 'ai';
 import { Markdown } from '../ui/markdown';
 import { useState } from 'react';
+import { Source } from '../extras/icons';
 
 interface MessageAssistantProps {
   message: MessageAISDK;
@@ -31,6 +32,10 @@ export const MessageAssistant = ({
     (part) => part.type === "tool-invocation"
   );
 
+  const sourceParts = parts?.filter(
+    (part) => part.type === "source"
+  );
+
   const reasoningParts = parts?.find((part) => part.type === "reasoning");
 
   return (
@@ -42,11 +47,8 @@ export const MessageAssistant = ({
         {message.toolInvocations?.map((toolInvocation: ToolInvocation) => {
           const toolCallId = toolInvocation.toolCallId;
           if (toolInvocation.toolName === 'showPromptInCanvas') {
-            const prompt = toolInvocation.args.prompt;
-            console.log(prompt);
-
             return (
-              <div key={toolCallId} className="text-gray-500 mx-[14px] bg-muted rounded-md p-2">
+              <div key={toolCallId} className="text-gray-500 bg-muted rounded-md p-2">
                 Calling {toolInvocation.toolName === 'showPromptInCanvas' && 'Show Prompt in Canvas'}...
               </div>
             );
@@ -54,7 +56,7 @@ export const MessageAssistant = ({
         })}
 
         {reasoningParts && reasoningParts.reasoning && (
-          <div className="bg-transparent text-foreground px-[14px]">
+          <div className="bg-transparent text-foreground">
             {reasoningParts.reasoning}
           </div>
         )}
@@ -64,10 +66,22 @@ export const MessageAssistant = ({
           </div>
         )}
 
-
-        <Markdown className="bg-transparent text-foreground px-[14px] space-y-2.5 leading-[1lh]">
+        <Markdown className="bg-transparent text-foreground space-y-2.5 leading-[1lh]">
           {message.content}
         </Markdown>
+
+        {sourceParts && sourceParts.length > 0 && (
+          <div className="flex flex-wrap gap-1 w-full mt-2">
+            {sourceParts.map((source) => (
+              <div key={source.source.id} className="text-brand-green font-semibold bg-brand-green/10 rounded-full py-2 px-4 text-sm flex items-center gap-2">
+                <a href={source.source.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                  <Source className="size-4" />
+                  <p className="text-sm">{source.source.title}</p>
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
 
         <MessageActions className="self-end md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-full justify-start">
           <Button
