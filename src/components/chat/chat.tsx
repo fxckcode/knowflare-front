@@ -63,8 +63,6 @@ export const Chat = () => {
   });
 
   useEffect(() => {
-    console.log("messages", messages);
-    console.log('status', status);
     if (status === 'ready') {
       stop();
     }
