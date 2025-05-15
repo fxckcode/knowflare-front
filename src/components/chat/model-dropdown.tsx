@@ -5,7 +5,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { models } from "@/lib/agents";
+import { models } from "@/ai/agents";
 
 interface ModelDropdownProps {
   model: string;

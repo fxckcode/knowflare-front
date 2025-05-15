@@ -1,26 +1,13 @@
 import {
   aiPromptGeneratorSystemPrompt,
+  defaultSystemPrompt,
   socratesSystemPrompt,
   yodaSystemPrompt
 } from '@/ai/prompts';
-import { Agent, Model, Models } from './types';
+import { Agent, Model, Models } from '../lib/types';
 import { z } from 'zod';
 
 export const models: Model[] = [
-  // {
-  //   name: 'GPT-4.1',
-  //   provider: 'OpenAI',
-  //   description:
-  //     'OpenAI’s most powerful model. Excellent at coding, writing, and complex tasks.',
-  //   value: Models.GPT_4
-  // },
-  // {
-  //   name: 'GPT-4o',
-  //   provider: 'OpenAI',
-  //   description:
-  //     'OpenAI’s most powerful model. Excellent at coding, writing, and complex tasks.',
-  //   value: Models.GPT_4O
-  // },
   {
     name: 'Gemini 2.5 Pro',
     provider: 'Google',
@@ -77,12 +64,9 @@ export const agents: Agent[] = [
     agentName: 'socrates',
     systemPrompt: socratesSystemPrompt
   }
-  // {
-  //   name: 'N8N Agent',
-  //   description:
-  //     'N8N Agent is a helpful assistant that can help you with your tasks.',
-  //   image: '/images/agents/n8n-agent.png',
-  //   agentName: 'n8n-agent',
-  //   systemPrompt: ''
-  // }
 ];
+
+export const defaultConfig = {
+  systemPrompt: defaultSystemPrompt,
+  temperature: 0.5
+};
