@@ -36,7 +36,7 @@ export const MessageAssistant = ({
     (part) => part.type === "source"
   );
 
-  const reasoningParts = parts?.find((part) => part.type === "reasoning");
+  const reasoningParts = parts?.find((part) => part.type === "reasoning");  
 
   return (
     <Message
@@ -66,7 +66,7 @@ export const MessageAssistant = ({
           </div>
         )}
 
-        <Markdown className="bg-transparent text-foreground space-y-2.5 leading-[1lh]">
+        <Markdown className="message-content">
           {message.content}
         </Markdown>
 

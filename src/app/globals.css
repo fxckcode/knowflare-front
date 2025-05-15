@@ -193,3 +193,14 @@
     @apply ml-6 list-disc;
   }
 }
+
+.message-content {
+  @apply bg-transparent text-foreground space-y-2.5 leading-[1lh];
+
+  ul {
+    @apply space-y-[12px];
+  }
+  li {
+    @apply ml-6 list-disc;
+  }
+}

@@ -39,8 +39,7 @@ export default function Home() {
 
   const handleSubmitChat = () => {
     if (!inputValue.trim()) return;
-    console.log('Submitting:', inputValue);
-    router.push(`/chat?prompt=${inputValue}&useSearch=${isSearchGrounding}`);
+    router.push(`/chat?prompt=${inputValue}${isSearchGrounding && '&search=true'}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

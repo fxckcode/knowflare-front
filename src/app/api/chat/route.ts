@@ -11,9 +11,11 @@ const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY
 });
 
+
 export async function POST(req: Request) {
-  const { messages, model, agentName, isSearchGrounding } = await req.json();
-  const currentAgent = agents.find(agent => agent.agentName === agentName);
+  try {
+    const { messages, model, agentName, isSearchGrounding } = await req.json();
+    const currentAgent = agents.find(agent => agent.agentName === agentName);
 
   console.log('isSearchGrounding', isSearchGrounding);
   console.log('messages', messages);
@@ -39,8 +41,12 @@ export async function POST(req: Request) {
   });
 
   return result.toDataStreamResponse({
-    sendSources: true,
-    sendReasoning: true
-  });
-
+      sendSources: true,
+      sendReasoning: true,
+      sendUsage: true
+    });
+  } catch (error) {
+    console.error('Error in chat API:', error);
+    return new Response('Internal Server Error', { status: 500 });
+  }
 }

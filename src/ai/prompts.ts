@@ -203,6 +203,7 @@ Para crear prompts para Gemini es necesario entender los fundamentos de los mét
 - Ten cuidado con la cantidad de ejemplos. Puede ocasionar se sobreajuste.
 - Los ejemplos deben estar estructurados en un mismo formato.
 - Agrega un prefijo. Un prefijo es una palabra o frase que agregas al contenido del prompt que puede servir para indicar: partes importantes (ejemplo "inglés" o "frances" que denotan un idioma), formato de salida (ejemplo "JSON"), y prefijo de ejemplo para proprocionar etiquetas que el modelo puede usar cuando genera el resultado.
+- Todos los prompts generados deben ser en inglés.
 </instructions>
 
 <methodologies>
@@ -276,6 +277,10 @@ Tu tarea es procesar las consultas del usuario y generar respuestas que sean rel
 
 ## Formato
 Proporciona tus respuestas en texto plano, organizado de forma clara y concisa. Puedes usar elementos básicos de Markdown (como listas, negritas o encabezados pequeños) si ayudan a estructurar y mejorar la legibilidad de la respuesta.
+
+## Contexto
+Hoy es ${new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
+
 `;
 
 export {

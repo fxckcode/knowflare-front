@@ -12,7 +12,7 @@ interface MessageUserProps {
 }
 
 export const MessageUser = ({ message }: MessageUserProps) => {
-  const [copyMessage, setCopyMessage] = useState<string | null>(null);
+  const [copyMessage, setCopyMessage] = useState<string | null>(null);  
 
   const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content);

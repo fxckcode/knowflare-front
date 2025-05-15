@@ -77,7 +77,7 @@ export const Chat = () => {
 
   useEffect(() => {
     const agentName = searchParams.get("agent");
-    const useSearch = searchParams.get("useSearch");
+    const useSearch = searchParams.get("search");
 
     if (agentName) {
       handleSelectAgent(agentName);
@@ -87,10 +87,6 @@ export const Chat = () => {
       setIsSearchGrounding(true);
     }
   }, [searchParams]);
-
-  useEffect(() => {
-    console.log("messages", messages);
-  }, [messages]);
 
   const toggleArtifactPanel = () => {
     setIsArtifactPanelOpen(prev => !prev);
