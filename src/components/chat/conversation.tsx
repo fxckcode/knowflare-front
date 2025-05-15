@@ -43,7 +43,7 @@ export const Conversation = ({ messages, status }: ConversationProps) => {
       })}
 
       {status === "submitted" && messages.length > 0 && (
-        <div className="group min-h-scroll-anchor flex w-full max-w-3xl flex-col items-start gap-2 px-4 pb-2 mx-auto">
+        <div className="group min-h-scroll-anchor flex w-full max-w-3xl flex-col items-start gap-2 px-2 pb-2 mx-auto">
           <TextShimmer className="font-mono text-sm" duration={3}>
             Thinking...
           </TextShimmer>

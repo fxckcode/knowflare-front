@@ -19,9 +19,9 @@ export const NavAgent = () => {
           className="w-6 h-6 min-w-6 min-h-6 rounded-full object-cover"
         />
       </div>
-      <p className="select-none">
+      <p className="select-none flex gap-2">
         <span className="hidden sm:inline">Talking with</span>
-        <strong className="line-clamp-1">{' ' + agent.name}</strong>
+        <strong className="line-clamp-1 sm:line-clamp-none">{' ' + agent.name}</strong>
       </p>
     </nav>
   );

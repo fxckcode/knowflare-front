@@ -31,6 +31,7 @@ const suggestionButtonsData: SuggestionButton[] = [
 export default function Home() {
   const router = useRouter();
   const [inputValue, setInputValue] = useState('');
+  const [isSearchGrounding, setIsSearchGrounding] = useState(false);
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
@@ -38,8 +39,7 @@ export default function Home() {
 
   const handleSubmitChat = () => {
     if (!inputValue.trim()) return;
-    console.log('Submitting:', inputValue);
-    router.push(`/chat?prompt=${inputValue}`);
+    router.push(`/chat?prompt=${inputValue}${isSearchGrounding && '&search=true'}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -89,8 +89,8 @@ export default function Home() {
           handleSubmit={handleSubmitChat}
           handleKeyDown={handleKeyDown}
           isLoading={false}
-          setIsSearchGrounding={() => { }}
-          isSearchGrounding={false}
+          setIsSearchGrounding={setIsSearchGrounding}
+          isSearchGrounding={isSearchGrounding}
         />
 
         {/* Suggestion Buttons */}

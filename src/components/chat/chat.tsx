@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { Agent, Models } from '@/lib/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAgent } from '@/stores/use-agent';
-import { agents } from '@/lib/agents';
+import { agents } from '@/ai/agents';
 import { Conversation } from './conversation';
 import { X } from 'lucide-react';
 
@@ -43,7 +43,15 @@ export const Chat = () => {
     setAgentPrompt(selectedAgent[0] || null);
   };
 
-  const { messages, input, handleInputChange, handleSubmit, status, append, stop } = useChat({
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    status,
+    append,
+    stop
+  } = useChat({
     body: {
       model: globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17,
       agentName: agentPrompt?.agentName || null,
@@ -53,20 +61,9 @@ export const Chat = () => {
       if (toolCall.toolName === 'showPromptInCanvas') {
         setIsArtifactPanelOpen(true);
         setArtifactValue((toolCall.args as unknown as { prompt: string }).prompt);
-        console.log("--------------------------------");
-        console.log(toolCall.toolCallId);
-        console.log(toolCall.toolName);
-        console.log(toolCall.args);
-        console.log("--------------------------------");
       }
     }
   });
-
-  useEffect(() => {
-    if (status === 'ready') {
-      stop();
-    }
-  }, [status]);
 
   useEffect(() => {
     const prompt = searchParams.get("prompt");
@@ -80,8 +77,14 @@ export const Chat = () => {
 
   useEffect(() => {
     const agentName = searchParams.get("agent");
+    const useSearch = searchParams.get("search");
+
     if (agentName) {
       handleSelectAgent(agentName);
+    }
+
+    if (useSearch) {
+      setIsSearchGrounding(true);
     }
   }, [searchParams]);
 

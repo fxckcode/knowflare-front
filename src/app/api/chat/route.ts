@@ -1,5 +1,4 @@
-import { agents } from '@/lib/agents';
-import { Agent } from '@/lib/types';
+import { agents, defaultConfig } from '@/ai/agents';
 import {
   createGoogleGenerativeAI,
   GoogleGenerativeAIProviderOptions
@@ -12,37 +11,42 @@ const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY
 });
 
+
 export async function POST(req: Request) {
   try {
     const { messages, model, agentName, isSearchGrounding } = await req.json();
     const currentAgent = agents.find(agent => agent.agentName === agentName);
 
-    const { systemPrompt, tools } = currentAgent as Agent;
-    console.log('isSearchGrounding', isSearchGrounding);
-    const result = streamText({
-      model: google(model, {
-        useSearchGrounding: isSearchGrounding
-      }),
-      system: systemPrompt || 'You are a helpful assistant. Your name is Idle.',
-      messages,
-      tools: tools || {},
-      temperature: 0.7,
-      maxRetries: 1,
-      providerOptions: {
-        google: {
-          thinkingConfig: {
-            thinkingBudget: 2048
-          }
-        } satisfies GoogleGenerativeAIProviderOptions
-      }
-    });
+  console.log('isSearchGrounding', isSearchGrounding);
+  console.log('messages', messages);
+  
+  const systemPrompt = currentAgent?.systemPrompt || defaultConfig.systemPrompt;
+  const tools = currentAgent?.tools || {};
 
-    return result.toDataStreamResponse({
+  const result = streamText({
+    model: google(model, {
+      useSearchGrounding: isSearchGrounding
+    }),
+    system: systemPrompt,
+    messages,
+    tools,
+    temperature: defaultConfig.temperature,
+    providerOptions: {
+      google: {
+        thinkingConfig: {
+          thinkingBudget: 2048
+        }
+      } satisfies GoogleGenerativeAIProviderOptions
+    }
+  });
+
+  return result.toDataStreamResponse({
       sendSources: true,
-      sendReasoning: true
+      sendReasoning: true,
+      sendUsage: true
     });
   } catch (error) {
-    console.error(error);
-    return new Response('Error', { status: 500 });
+    console.error('Error in chat API:', error);
+    return new Response('Internal Server Error', { status: 500 });
   }
 }

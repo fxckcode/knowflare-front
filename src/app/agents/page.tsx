@@ -1,5 +1,5 @@
 import { AgentCard } from "@/components/agents/agent-card";
-import { agents } from "@/lib/agents";
+import { agents } from "@/ai/agents";
 import Link from "next/link";
 
 const Page = () => {
