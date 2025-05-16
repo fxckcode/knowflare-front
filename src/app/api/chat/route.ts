@@ -11,36 +11,36 @@ const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY
 });
 
-
 export async function POST(req: Request) {
   try {
     const { messages, model, agentName, isSearchGrounding } = await req.json();
     const currentAgent = agents.find(agent => agent.agentName === agentName);
 
-  console.log('isSearchGrounding', isSearchGrounding);
-  console.log('messages', messages);
-  
-  const systemPrompt = currentAgent?.systemPrompt || defaultConfig.systemPrompt;
-  const tools = currentAgent?.tools || {};
+    console.log('isSearchGrounding', isSearchGrounding);
+    console.log('messages', messages);
 
-  const result = streamText({
-    model: google(model, {
-      useSearchGrounding: isSearchGrounding
-    }),
-    system: systemPrompt,
-    messages,
-    tools,
-    temperature: defaultConfig.temperature,
-    providerOptions: {
-      google: {
-        thinkingConfig: {
-          thinkingBudget: 2048
-        }
-      } satisfies GoogleGenerativeAIProviderOptions
-    }
-  });
+    const systemPrompt =
+      currentAgent?.systemPrompt || defaultConfig.systemPrompt;
+    const tools = currentAgent?.tools || {};
 
-  return result.toDataStreamResponse({
+    const result = streamText({
+      model: google(model, {
+        useSearchGrounding: isSearchGrounding
+      }),
+      system: systemPrompt,
+      messages,
+      tools,
+      temperature: defaultConfig.temperature,
+      providerOptions: {
+        google: {
+          thinkingConfig: {
+            thinkingBudget: 2048
+          }
+        } satisfies GoogleGenerativeAIProviderOptions
+      }
+    });
+
+    return result.toDataStreamResponse({
       sendSources: true,
       sendReasoning: true,
       sendUsage: true

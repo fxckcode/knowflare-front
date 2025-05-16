@@ -10,14 +10,16 @@ import { useRef } from "react";
 interface ConversationProps {
   messages: Message[];
   status: 'submitted' | 'streaming' | 'ready' | 'error';
+  error: Error | undefined;
+  reload: () => void;
 };
 
-export const Conversation = ({ messages, status }: ConversationProps) => {
+export const Conversation = ({ messages, status, error, reload }: ConversationProps) => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <ChatContainer
-      className="flex-1 space-y-4 sm:px-2 md:p-4 no-scrollbar"
+      className="flex-1 space-y-4 px-4 md:p-4 no-scrollbar"
       autoScroll={true}
       ref={chatContainerRef}
     >
@@ -41,6 +43,15 @@ export const Conversation = ({ messages, status }: ConversationProps) => {
           />
         );
       })}
+
+      {error && (
+        <div className="flex items-center justify-center gap-2 bg-red-100 rounded-md p-2 text-red-950">
+          <p>An error occurred.</p>
+          <button type="button" onClick={() => reload()} className="font-bold">
+            Retry
+          </button>
+        </div>
+      )}
 
       {status === "submitted" && messages.length > 0 && (
         <div className="group min-h-scroll-anchor flex w-full max-w-3xl flex-col items-start gap-2 px-2 pb-2 mx-auto">

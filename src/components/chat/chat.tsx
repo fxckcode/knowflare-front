@@ -34,6 +34,7 @@ export const Chat = () => {
   const [agentPrompt, setAgentPrompt] = useState<Agent | null>(null);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isSearchGrounding, setIsSearchGrounding] = useState(false);
+  const [files, setFiles] = useState<FileList | undefined>(undefined);
 
   const handleSelectAgent = (agentName: string) => {
     if (!agentName) return;
@@ -50,7 +51,9 @@ export const Chat = () => {
     handleSubmit,
     status,
     append,
-    stop
+    stop,
+    error,
+    reload
   } = useChat({
     body: {
       model: globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17,
@@ -108,7 +111,7 @@ export const Chat = () => {
     },
     closed: {
       width: "100%",
-      padding: "0 16px", // Assuming original padding when closed
+      padding: "0 16px",
       opacity: 1,
       transition: { duration: 0.5, delay: isMobile && !isArtifactPanelOpen ? 0.2 : 0 }
     }
@@ -124,7 +127,7 @@ export const Chat = () => {
     visible: {
       opacity: 1,
       width: isMobile ? "100%" : "60%",
-      padding: "16px", // Default padding, adjust as needed. Was px-4 pt-9 pb-4
+      padding: "16px",
       transition: { duration: 0.5, delay: 0.2 }
     }
   };
@@ -145,10 +148,12 @@ export const Chat = () => {
         animate={isArtifactPanelOpen ? "open" : "closed"}
         transition={panelTransition}
       >
-        <div className="w-full max-w-chat mx-auto flex flex-col flex-1 h-full pb-[16px] overflow-hidden">
+        <div className="w-full max-w-chat mx-auto flex flex-col flex-1 h-full pb-[16px] overflow-hidden !px-0 sm:px-4">
           <Conversation
             messages={messages}
             status={status}
+            error={error}
+            reload={reload}
           />
 
           <PromptTextarea
@@ -160,6 +165,8 @@ export const Chat = () => {
             stop={stop}
             setIsSearchGrounding={setIsSearchGrounding}
             isSearchGrounding={isSearchGrounding}
+            files={files}
+            setFiles={setFiles}
           />
         </div>
       </motion.section>

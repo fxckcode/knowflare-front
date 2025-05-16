@@ -32,6 +32,7 @@ export default function Home() {
   const router = useRouter();
   const [inputValue, setInputValue] = useState('');
   const [isSearchGrounding, setIsSearchGrounding] = useState(false);
+  const [files, setFiles] = useState<FileList | undefined>(undefined);
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
@@ -39,7 +40,7 @@ export default function Home() {
 
   const handleSubmitChat = () => {
     if (!inputValue.trim()) return;
-    router.push(`/chat?prompt=${inputValue}${isSearchGrounding && '&search=true'}`);
+    router.push(`/chat?prompt=${inputValue}${isSearchGrounding ? '&search=true' : ''}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -76,7 +77,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100dvh-72px)] px-4 pb-[72px] w-full ">
       <div className="flex flex-col items-center gap-5 mb-10">
-        <div className="rounded-xl bg-neutral-900 h-[45px] w-[45px]"></div>
+        <div className="rounded-xl h-[45px] w-[45px] animated-green-orb"></div>
         <h1 className="text-3xl text-gray-800 font-medium tracking-tight leading-[40px]">
           What&apos;s on your mind?
         </h1>
@@ -91,6 +92,8 @@ export default function Home() {
           isLoading={false}
           setIsSearchGrounding={setIsSearchGrounding}
           isSearchGrounding={isSearchGrounding}
+          files={files}
+          setFiles={setFiles}
         />
 
         {/* Suggestion Buttons */}

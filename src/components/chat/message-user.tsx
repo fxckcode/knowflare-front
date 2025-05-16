@@ -12,7 +12,7 @@ interface MessageUserProps {
 }
 
 export const MessageUser = ({ message }: MessageUserProps) => {
-  const [copyMessage, setCopyMessage] = useState<string | null>(null);  
+  const [copyMessage, setCopyMessage] = useState<string | null>(null);
 
   const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content);
@@ -31,7 +31,21 @@ export const MessageUser = ({ message }: MessageUserProps) => {
         message.role === "user" ? "justify-end" : "justify-start"
       )}
     >
-      <div className={cn("max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col")}>
+      <div className={cn("max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col items-end")}>
+        <div className="aspect-[16/9] rounded-md overflow-hidden max-w-[60%] md:max-w-[50%]">
+          {message.experimental_attachments
+            ?.filter(attachment =>
+              attachment.contentType?.startsWith('image/')
+            )
+            .map((attachment, index) => (
+              <img
+                key={`${message.id}-${index}`}
+                src={attachment.url}
+                alt={attachment.name}
+                className="w-full h-full object-cover"
+              />
+            ))}
+        </div>
         <MessageContent className="bg-gray-100/60 text-foreground px-[14px]">
           {message.content}
         </MessageContent>
