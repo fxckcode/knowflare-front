@@ -1,6 +1,7 @@
 import {
   aiPromptGeneratorSystemPrompt,
   defaultSystemPrompt,
+  learnWithQuizzySystemPrompt,
   socratesSystemPrompt,
   yodaSystemPrompt
 } from '@/ai/prompts';
@@ -63,6 +64,13 @@ export const agents: Agent[] = [
       'https://dialektika.org/wp-content/uploads/2023/05/Socrates.jpg.webp',
     agentName: 'socrates',
     systemPrompt: socratesSystemPrompt
+  },
+  {
+    name: 'Learn with Quizzy',
+    description: 'Un agente que te ayuda a aprender y entender cualquier tema.',
+    image: '/images/agents/quizzy-agent.png',
+    agentName: 'quizzy',
+    systemPrompt: learnWithQuizzySystemPrompt
   }
 ];
 
