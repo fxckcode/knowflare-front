@@ -39,7 +39,7 @@ export const PromptTextarea = ({
   setFiles
 }: PromptTextarea) => {
   const [model, setModel] = useState(globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17);
-  const isDisabled = isLoading || inputValue.length === 0;
+  const isDisabled = inputValue.length === 0;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleModelChange = (model: string) => {
