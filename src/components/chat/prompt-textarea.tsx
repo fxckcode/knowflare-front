@@ -17,7 +17,7 @@ interface PromptTextarea {
   handleSubmit: (event?: {
     preventDefault?: () => void;
   }, chatRequestOptions?: ChatRequestOptions) => void
-  handleKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
+  handleKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
   stop?: () => void;
   setIsSearchGrounding: Dispatch<SetStateAction<boolean>>;

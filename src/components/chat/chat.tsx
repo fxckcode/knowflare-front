@@ -1,15 +1,16 @@
 "use client";
 
 import { PromptTextarea } from '@/components/chat/prompt-textarea';
-import { useState, useEffect, KeyboardEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { useSearchParams } from 'next/navigation';
 import { Agent, Models } from '@/lib/types';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useAgent } from '@/stores/use-agent';
 import { agents } from '@/ai/agents';
 import { Conversation } from './conversation';
 import { X } from 'lucide-react';
+import { Button } from '../ui/button';
+import { motion, AnimatePresence } from 'motion/react';
 
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);
@@ -35,11 +36,13 @@ export const Chat = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isSearchGrounding, setIsSearchGrounding] = useState(false);
   const [files, setFiles] = useState<FileList | undefined>(undefined);
+  const [suggestions, setSuggestions] = useState<Agent['suggestions']>([]);
 
   const handleSelectAgent = (agentName: string) => {
     if (!agentName) return;
 
     const selectedAgent = agents.filter(agent => agent.agentName === agentName);
+    setSuggestions(selectedAgent[0].suggestions);
     setAgent(selectedAgent[0] || null);
     setAgentPrompt(selectedAgent[0] || null);
   };
@@ -47,6 +50,7 @@ export const Chat = () => {
   const {
     messages,
     input,
+    setInput,
     handleInputChange,
     handleSubmit,
     status,
@@ -80,6 +84,12 @@ export const Chat = () => {
 
   useEffect(() => {
     const agentName = searchParams.get("agent");
+    document.title = agentName ? `Idle - Talking with ${agentName}` : 'Idle - Chat';
+
+  }, [document.title, searchParams]);
+
+  useEffect(() => {
+    const agentName = searchParams.get("agent");
     const useSearch = searchParams.get("search");
 
     if (agentName) {
@@ -93,13 +103,6 @@ export const Chat = () => {
 
   const toggleArtifactPanel = () => {
     setIsArtifactPanelOpen(prev => !prev);
-  };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
   };
 
   const chatVariants = {
@@ -156,11 +159,26 @@ export const Chat = () => {
             reload={reload}
           />
 
+          {messages.length < 1 && suggestions && (
+            <motion.div className="flex gap-[16px] mb-4 flex-col md:flex-row">
+              {suggestions.map(suggestion => (
+                <motion.div key={suggestion.prompt}>
+                  <Button
+                    variant="outline"
+                    className="rounded-full cursor-pointer"
+                    onClick={() => setInput(suggestion.prompt)}
+                    >
+                    {suggestion.suggestion}
+                  </Button>
+                  </motion.div>
+              ))}
+            </motion.div>
+          )}
+
           <PromptTextarea
             inputValue={input}
             handleInputChange={handleInputChange}
             handleSubmit={handleSubmit}
-            handleKeyDown={handleKeyDown}
             isLoading={status === 'submitted' || status === 'streaming'}
             stop={stop}
             setIsSearchGrounding={setIsSearchGrounding}

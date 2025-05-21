@@ -1,6 +1,7 @@
 import {
   aiPromptGeneratorSystemPrompt,
   defaultSystemPrompt,
+  formalSystemPrompt,
   learnWithQuizzySystemPrompt,
   socratesSystemPrompt,
   yodaSystemPrompt
@@ -71,6 +72,27 @@ export const agents: Agent[] = [
     image: '/images/agents/quizzy-agent.png',
     agentName: 'quizzy',
     systemPrompt: learnWithQuizzySystemPrompt
+  },
+  {
+    name: 'Formal Writter',
+    description: 'Create perfect, profesional and too formal messages.',
+    image: '/images/agents/formal-agent.png',
+    agentName: 'formal',
+    systemPrompt: formalSystemPrompt,
+    suggestions: [
+      {
+        suggestion: 'Write a birthday message',
+        prompt: 'Write a birthday message'
+      },
+      {
+        suggestion: 'A letter of introduction',
+        prompt: 'Write a professional letter of introduction'
+      }, 
+      {
+        suggestion: 'Instagram Post',
+        prompt: 'Write a large and formal insgram post about potato cultivation'
+      }
+    ]
   }
 ];
 
