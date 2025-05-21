@@ -15,6 +15,10 @@ export type Agent = {
   agentName: string;
   systemPrompt: string;
   tools?: ToolSet;
+  suggestions?: {
+    suggestion: string;
+    prompt: string;
+  }[];
 };
 
 export type Model = {
