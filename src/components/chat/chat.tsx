@@ -1,7 +1,7 @@
 "use client";
 
 import { PromptTextarea } from '@/components/chat/prompt-textarea';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { useSearchParams } from 'next/navigation';
 import { Agent, Models } from '@/lib/types';
@@ -49,6 +49,7 @@ export const Chat = () => {
 
   const {
     messages,
+    setMessages,
     input,
     setInput,
     handleInputChange,
@@ -105,6 +106,23 @@ export const Chat = () => {
     setIsArtifactPanelOpen(prev => !prev);
   };
 
+
+  const handleEdit = useCallback((id: string, newText: string) => {
+      setMessages(
+        messages.map((message) =>
+          message.id === id ? { ...message, content: newText } : message
+        )
+      );
+    },
+  [messages, setMessages]);
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      setMessages(messages.filter((message) => message.id !== id));
+    },
+    [messages, setMessages]
+  );
+
   const chatVariants = {
     open: {
       width: isMobile ? "0%" : "40%",
@@ -157,6 +175,8 @@ export const Chat = () => {
             status={status}
             error={error}
             reload={reload}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
 
           {messages.length < 1 && suggestions && (
