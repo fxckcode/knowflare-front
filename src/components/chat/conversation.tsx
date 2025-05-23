@@ -12,9 +12,11 @@ interface ConversationProps {
   status: 'submitted' | 'streaming' | 'ready' | 'error';
   error: Error | undefined;
   reload: () => void;
+  onEdit: (id: string, newText: string) => void;
+  onDelete: (id: string) => void;
 };
 
-export const Conversation = ({ messages, status, error, reload }: ConversationProps) => {
+export const Conversation = ({ messages, status, error, reload, onEdit, onDelete }: ConversationProps) => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -40,6 +42,9 @@ export const Conversation = ({ messages, status, error, reload }: ConversationPr
           <MessageUser
             key={message.id}
             message={message}
+            onEdit={onEdit}
+            onReload={reload}
+            onDelete={onDelete}
           />
         );
       })}
