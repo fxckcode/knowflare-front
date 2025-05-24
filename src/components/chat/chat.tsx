@@ -42,9 +42,13 @@ export const Chat = () => {
     if (!agentName) return;
 
     const selectedAgent = agents.filter(agent => agent.agentName === agentName);
-    setSuggestions(selectedAgent[0].suggestions);
-    setAgent(selectedAgent[0] || null);
-    setAgentPrompt(selectedAgent[0] || null);
+    const agent = selectedAgent[0];
+
+    if (agent.userSearch) setIsSearchGrounding(true);
+
+    setSuggestions(agent.suggestions);
+    setAgent(agent || null);
+    setAgentPrompt(agent || null);
   };
 
   const {
@@ -106,15 +110,14 @@ export const Chat = () => {
     setIsArtifactPanelOpen(prev => !prev);
   };
 
-
   const handleEdit = useCallback((id: string, newText: string) => {
-      setMessages(
-        messages.map((message) =>
-          message.id === id ? { ...message, content: newText } : message
-        )
-      );
-    },
-  [messages, setMessages]);
+    setMessages(
+      messages.map((message) =>
+        message.id === id ? { ...message, content: newText } : message
+      )
+    );
+  },
+    [messages, setMessages]);
 
   const handleDelete = useCallback(
     (id: string) => {
@@ -187,10 +190,10 @@ export const Chat = () => {
                     variant="outline"
                     className="rounded-full cursor-pointer"
                     onClick={() => setInput(suggestion.prompt)}
-                    >
+                  >
                     {suggestion.suggestion}
                   </Button>
-                  </motion.div>
+                </motion.div>
               ))}
             </motion.div>
           )}

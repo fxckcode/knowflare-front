@@ -1,4 +1,5 @@
 import { agents, defaultConfig } from '@/ai/agents';
+import { getFactCheckerPrompt } from '@/ai/prompts';
 import {
   createGoogleGenerativeAI,
   GoogleGenerativeAIProviderOptions
@@ -16,8 +17,15 @@ export async function POST(req: Request) {
     const { messages, model, agentName, isSearchGrounding } = await req.json();
     const currentAgent = agents.find(agent => agent.agentName === agentName);
 
-    console.log('isSearchGrounding', isSearchGrounding);
-    console.log('messages', messages);
+    if (currentAgent?.agentName === 'fact-checker') {
+      const factCheckerPrompt = getFactCheckerPrompt(
+        messages[messages.length - 1].content
+      );
+      messages.push({
+        role: 'user',
+        content: factCheckerPrompt
+      });
+    }
 
     const systemPrompt =
       currentAgent?.systemPrompt || defaultConfig.systemPrompt;
@@ -25,7 +33,13 @@ export async function POST(req: Request) {
 
     const result = streamText({
       model: google(model, {
-        useSearchGrounding: isSearchGrounding
+        useSearchGrounding: isSearchGrounding,
+        ...(currentAgent?.agentName === 'fact-checker' && {
+          dynamicRetrievalConfig: {
+            mode: 'MODE_DYNAMIC' as const,
+            dynamicThreshold: 0
+          }
+        })
       }),
       system: systemPrompt,
       messages,

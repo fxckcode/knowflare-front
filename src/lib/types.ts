@@ -1,3 +1,4 @@
+import { AgentNames } from '@/ai/agents';
 import { ToolSet } from 'ai';
 
 export enum Models {
@@ -12,13 +13,14 @@ export type Agent = {
   name: string;
   description: string;
   image: string;
-  agentName: string;
+  agentName: AgentNames;
   systemPrompt: string;
   tools?: ToolSet;
   suggestions?: {
     suggestion: string;
     prompt: string;
   }[];
+  userSearch?: boolean;
 };
 
 export type Model = {

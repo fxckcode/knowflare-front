@@ -72,45 +72,45 @@ export const MessageUser = ({ message, onEdit, onReload, onDelete }: MessageUser
         </div>
 
         {isEditing ? (
-        <div
-          className="bg-accent relative flex min-w-[180px] flex-col gap-2 rounded-3xl px-5 pb-2.5 pt-3.5"
-          style={{
-            width: contentRef.current?.offsetWidth
-          }}
-        >
-          <textarea
-            className="w-full resize-none bg-transparent outline-none"
-            value={editInput}
-            onChange={(e) => setEditInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSave();
-              }
-              if (e.key === "Escape") {
-                handleEditCancel();
-              }
+          <div
+            className="bg-accent relative flex min-w-[180px] flex-col gap-2 rounded-3xl px-5 pb-2.5 pt-3.5"
+            style={{
+              width: contentRef.current?.offsetWidth
             }}
-            autoFocus
-          />
-          <div className="flex justify-end gap-2">
-            <Button size="sm" variant="ghost" onClick={handleEditCancel}>
-              Cancel
-            </Button>
-            <Button size="sm" onClick={handleSave}>
-              Save
-            </Button>
-          </div>
+          >
+            <textarea
+              className="w-full resize-none bg-transparent outline-none"
+              value={editInput}
+              onChange={(e) => setEditInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSave();
+                }
+                if (e.key === "Escape") {
+                  handleEditCancel();
+                }
+              }}
+              autoFocus
+            />
+            <div className="flex justify-end gap-2">
+              <Button size="sm" variant="ghost" onClick={handleEditCancel}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleSave}>
+                Save
+              </Button>
+            </div>
           </div>
         ) : (
-          <MessageContent className="bg-gray-100/60 text-foreground px-[14px]">
+          <MessageContent className="bg-gray-100/60 text-foreground px-[16px] py-[12px] rounded-[15px] !rounded-tr-[0px]">
             {message.content}
           </MessageContent>
         )}
 
-        <MessageActions 
+        <MessageActions
           className={cn(
-            "self-end md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-full flex gap-2", 
+            "self-end md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-full flex gap-2",
             message.role === "user" ? "justify-end hidden md:flex" : "justify-start"
           )}>
           <Button
