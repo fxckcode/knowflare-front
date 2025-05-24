@@ -36,7 +36,7 @@ export const MessageAssistant = ({
     (part) => part.type === "source"
   );
 
-  const reasoningParts = parts?.find((part) => part.type === "reasoning");  
+  const reasoningParts = parts?.find((part) => part.type === "reasoning");
 
   return (
     <Message

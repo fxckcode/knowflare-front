@@ -1,6 +1,7 @@
 import {
   aiPromptGeneratorSystemPrompt,
   defaultSystemPrompt,
+  factCheckerSystemPrompt,
   formalSystemPrompt,
   learnWithQuizzySystemPrompt,
   socratesSystemPrompt,
@@ -8,6 +9,14 @@ import {
 } from '@/ai/prompts';
 import { Agent, Model, Models } from '../lib/types';
 import { z } from 'zod';
+
+export type AgentNames =
+  | 'ai-prompt-generator'
+  | 'yoda'
+  | 'socrates'
+  | 'quizzy'
+  | 'formal'
+  | 'fact-checker';
 
 export const models: Model[] = [
   {
@@ -68,14 +77,14 @@ export const agents: Agent[] = [
   },
   {
     name: 'Learn with Quizzy',
-    description: 'Un agente que te ayuda a aprender y entender cualquier tema.',
+    description: 'Agent that helps you learn and understand any topic.',
     image: '/images/agents/quizzy-agent.png',
     agentName: 'quizzy',
     systemPrompt: learnWithQuizzySystemPrompt
   },
   {
     name: 'Formal Writter',
-    description: 'Create perfect, profesional and too formal messages.',
+    description: 'Create perfect, professional and too formal messages.',
     image: '/images/agents/formal-agent.png',
     agentName: 'formal',
     systemPrompt: formalSystemPrompt,
@@ -87,10 +96,33 @@ export const agents: Agent[] = [
       {
         suggestion: 'A letter of introduction',
         prompt: 'Write a professional letter of introduction'
-      }, 
+      },
       {
         suggestion: 'Instagram Post',
-        prompt: 'Write a large and formal insgram post about potato cultivation'
+        prompt:
+          'Write a large and formal instagram post about potato cultivation'
+      }
+    ]
+  },
+  {
+    name: 'AI Factly',
+    description: 'Check if something is true, false or mixed.',
+    image: '/images/agents/fact-checker-agent.png',
+    agentName: 'fact-checker',
+    systemPrompt: factCheckerSystemPrompt,
+    userSearch: true,
+    suggestions: [
+      {
+        suggestion: 'Is the moon made of cheese?',
+        prompt: 'Is the moon made of cheese?'
+      },
+      {
+        suggestion: 'Is Mark Zuckerberg an alien?',
+        prompt: 'Is Mark Zuckerberg an alien?'
+      },
+      {
+        suggestion: 'Is the Earth flat?',
+        prompt: 'Is the Earth flat?'
       }
     ]
   }
