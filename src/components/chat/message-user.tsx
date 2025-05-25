@@ -6,6 +6,7 @@ import { Check, Copy, Pencil, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Message as MessageAISDK } from 'ai';
 import { useRef, useState } from 'react';
+import { ImagePreview } from '../modals/modal';
 
 interface MessageUserProps {
   message: MessageAISDK;
@@ -62,12 +63,16 @@ export const MessageUser = ({ message, onEdit, onReload, onDelete }: MessageUser
               attachment.contentType?.startsWith('image/')
             )
             .map((attachment, index) => (
-              <img
+              <ImagePreview
                 key={`${message.id}-${index}`}
-                src={attachment.url}
-                alt={attachment.name}
-                className="w-full h-full object-cover"
-              />
+                image={attachment.url}
+              >
+                <img
+                  src={attachment.url}
+                  alt={attachment.name}
+                  className="w-full h-full object-cover cursor-pointer"
+                />
+              </ImagePreview>
             ))}
         </div>
 
