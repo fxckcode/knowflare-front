@@ -34,13 +34,14 @@ export const Conversation = ({ messages, status, error, reload, onEdit, onDelete
               key={message.id}
               message={message}
               parts={message.parts}
+              onReload={reload}
             />
           );
         }
 
         return (
           <MessageUser
-            key={message.id}
+            key={`${message.id}-${message.createdAt}`}
             message={message}
             onEdit={onEdit}
             onReload={reload}

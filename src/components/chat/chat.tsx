@@ -30,7 +30,7 @@ function useMediaQuery(query: string): boolean {
 export const Chat = () => {
   const searchParams = useSearchParams();
   const [isArtifactPanelOpen, setIsArtifactPanelOpen] = useState(false);
-  const [artifactValue, setArtifactValue] = useState<string | null>(null);
+  // const [artifactValue, setArtifactValue] = useState<string | null>(null);
   const { setAgent } = useAgent();
   const [agentPrompt, setAgentPrompt] = useState<Agent | null>(null);
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -64,16 +64,14 @@ export const Chat = () => {
     error,
     reload
   } = useChat({
+    maxSteps: 1,
     body: {
       model: globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17,
       agentName: agentPrompt?.agentName || null,
       isSearchGrounding
     },
-    async onToolCall({ toolCall }) {
-      if (toolCall.toolName === 'showPromptInCanvas') {
-        setIsArtifactPanelOpen(true);
-        setArtifactValue((toolCall.args as unknown as { prompt: string }).prompt);
-      }
+    onError: (error) => {
+      console.error('Error in chat:', error);
     }
   });
 
@@ -212,6 +210,7 @@ export const Chat = () => {
         </div>
       </motion.section>
 
+      {/* TODO: Add artifact panel */}
       <AnimatePresence>
         {isArtifactPanelOpen && (
           <motion.aside
@@ -226,7 +225,7 @@ export const Chat = () => {
               <X />
             </button>
             <div className="p-4 h-full flex flex-col overflow-y-scroll">
-              <p>{artifactValue || ''}</p>
+              {/* <p>{artifactValue || ''}</p> */}
             </div>
           </motion.aside>
         )}

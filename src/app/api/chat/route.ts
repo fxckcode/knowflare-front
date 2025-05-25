@@ -1,5 +1,6 @@
 import { agents, defaultConfig } from '@/ai/agents';
 import { getFactCheckerPrompt } from '@/ai/prompts';
+import { generateImageTool } from '@/ai/tools';
 import {
   createGoogleGenerativeAI,
   GoogleGenerativeAIProviderOptions
@@ -29,7 +30,9 @@ export async function POST(req: Request) {
 
     const systemPrompt =
       currentAgent?.systemPrompt || defaultConfig.systemPrompt;
-    const tools = currentAgent?.tools || {};
+
+    const defaultTools = { generateImageTool }; // Tools for all agents
+    const tools = { ...defaultTools, ...(currentAgent?.tools || {}) };
 
     const result = streamText({
       model: google(model, {
