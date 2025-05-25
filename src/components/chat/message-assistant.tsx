@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import type { Message as MessageAISDK, ToolInvocation } from 'ai';
 import { Markdown } from '../ui/markdown';
 import { useState } from 'react';
-import { Source } from '../extras/icons';
+import { Source } from '../fundations/icons';
 
 interface MessageAssistantProps {
   message: MessageAISDK;
