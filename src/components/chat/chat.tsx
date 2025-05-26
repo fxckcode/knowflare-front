@@ -8,9 +8,9 @@ import { Agent, Models } from '@/lib/types';
 import { useAgent } from '@/stores/use-agent';
 import { agents } from '@/ai/agents';
 import { Conversation } from './conversation';
-import { X } from 'lucide-react';
 import { Button } from '../ui/button';
 import { motion, AnimatePresence } from 'motion/react';
+import { Canvas } from './canvas';
 
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);
@@ -141,21 +141,6 @@ export const Chat = () => {
     }
   };
 
-  const panelVariants = {
-    hidden: {
-      opacity: 0,
-      width: "0%",
-      padding: "0px",
-      transition: { duration: 0.3 }
-    },
-    visible: {
-      opacity: 1,
-      width: isMobile ? "100%" : "60%",
-      padding: "16px",
-      transition: { duration: 0.5, delay: 0.2 }
-    }
-  };
-
   const panelTransition = {
     type: "spring",
     stiffness: 120,
@@ -180,6 +165,7 @@ export const Chat = () => {
             reload={reload}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onShowCanvas={setIsArtifactPanelOpen}
           />
 
           {messages.length < 1 && suggestions && (
@@ -214,21 +200,10 @@ export const Chat = () => {
 
       <AnimatePresence>
         {isArtifactPanelOpen && (
-          <motion.aside
-            className="h-full bg-white backdrop-blur-md border-l border-border/80 shadow-xl"
-            variants={panelVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            transition={panelTransition}
-          >
-            <button onClick={toggleArtifactPanel} className="absolute top-3 left-4 md:left-7 z-20 cursor-pointer p-1 rounded-full hover:bg-muted">
-              <X />
-            </button>
-            <div className="p-4 h-full flex flex-col overflow-y-scroll">
-              <p>{artifactValue || ''}</p>
-            </div>
-          </motion.aside>
+          <Canvas
+            artifactValue={artifactValue || ''}
+            toggleArtifactPanel={toggleArtifactPanel}
+          />
         )}
       </AnimatePresence>
     </div>
