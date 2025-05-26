@@ -1,7 +1,7 @@
 'use client';
 
 import { Message, MessageActions } from '@/components/ui/message';
-import { Check, Copy } from 'lucide-react';
+import { BookMarkedIcon, Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Message as MessageAISDK, ToolInvocation } from 'ai';
 import { Markdown } from '../ui/markdown';
@@ -11,11 +11,13 @@ import { Source } from '../fundations/icons';
 interface MessageAssistantProps {
   message: MessageAISDK;
   parts: MessageAISDK["parts"];
+  onShowCanvas: (isShowing: boolean) => void;
 }
 
 export const MessageAssistant = ({
   message,
-  parts
+  parts,
+  onShowCanvas
 }: MessageAssistantProps) => {
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
 
@@ -48,9 +50,16 @@ export const MessageAssistant = ({
           const toolCallId = toolInvocation.toolCallId;
           if (toolInvocation.toolName === 'showPromptInCanvas') {
             return (
-              <div key={toolCallId} className="text-gray-500 bg-muted rounded-md p-2">
-                Calling {toolInvocation.toolName === 'showPromptInCanvas' && 'Show Prompt in Canvas'}...
-              </div>
+              <button
+                key={toolCallId}
+                className="text-gray-500 bg-muted/50 rounded-md p-2 flex items-center gap-3 cursor-pointer"
+                onClick={() => onShowCanvas(true)}
+              >
+                <div className="w-[45px] h-[45px] rounded-md border-[1.5px] border-gray-200 flex items-center justify-center">
+                  <BookMarkedIcon className="size-5" />
+                </div>
+                <span className="text-sm">Showing prompt in canvas...</span>
+              </button>
             );
           }
         })}

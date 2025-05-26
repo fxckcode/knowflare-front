@@ -234,3 +234,24 @@
   background-size: 250% 250%; /* Gradiente más grande que el div para permitir movimiento */
   animation: moveOrbGradient 8s ease-in-out infinite;
 }
+
+.canvas-content {
+  @apply space-y-4;
+
+  ul,
+  ol {
+    @apply space-y-1;
+
+    li {
+      @apply ml-6 list-disc;
+    }
+  }
+}
+
+.canvas-tools {
+  @apply absolute right-5 bottom-5 flex flex-col items-center justify-between gap-3;
+
+  button {
+    @apply hover:bg-muted text-muted-foreground cursor-pointer rounded-full bg-white p-2 transition-all duration-200 ease-in-out [&>svg]:size-4;
+  }
+}
