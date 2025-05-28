@@ -22,7 +22,7 @@ export async function generateImage(prompt: string) {
         }
       ]
     });
-
+    
     const image = result.files[0];
     return image;
   } catch (error) {

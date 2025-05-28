@@ -7,8 +7,13 @@ import type { Message as MessageAISDK } from 'ai';
 import { Markdown } from '../ui/markdown';
 import { useState } from 'react';
 import { Source } from '../extras/icons';
-import { base64ToImage } from '@/lib/utils';
 import { TextShimmer } from '../ui/text-shimmer';
+
+type FileUIPart = {
+  type: 'file';
+  mimeType: string;
+  data: string;
+};
 
 interface MessageAssistantProps {
   message: MessageAISDK;
@@ -21,7 +26,8 @@ export const MessageAssistant = ({
   parts,
   onReload
 }: MessageAssistantProps) => {
-  const [copyMessage, setCopyMessage] = useState<string | null>(null);
+  const [copyMessage, setCopyMessage] = useState<string | null>(null);  
+
 
   const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content);
@@ -42,6 +48,8 @@ export const MessageAssistant = ({
 
   const reasoningParts = parts?.find((part) => part.type === "reasoning");
 
+  const fileParts: FileUIPart | undefined = parts?.find((part) => part.type === "file");
+
   return (
     <Message
       key={message.id}
@@ -60,61 +68,30 @@ export const MessageAssistant = ({
           </Markdown>
         )}
 
+        {fileParts && (
+          <div className="flex flex-col gap-2">
+            <img src={`data:${fileParts.mimeType};base64,${fileParts.data}`} alt={fileParts.mimeType} />
+          </div>
+        )}
+
         {toolInvocationParts && toolInvocationParts.length > 0 && (
           <div className="flex flex-col gap-2">
             {toolInvocationParts.map((toolInvocation) => {
               const callId = toolInvocation.toolInvocation.toolCallId;
-
+              
               switch (toolInvocation.toolInvocation.toolName) {
                 case 'generateImageTool': {
                   switch (toolInvocation.toolInvocation.state) {
-                    case 'call': 
+                    case 'call':  
                       return (
-                        <TextShimmer key={toolInvocation.toolInvocation.toolCallId} className="font-mono text-sm" duration={3}>
+                        <p>
                           Thinking...
-                        </TextShimmer>
+                        </p>
                       );
 
                     case 'result': {
                       return (
-                        <>
-                          {toolInvocation.toolInvocation.result?.status === 500 ? (
-                            <>
-                              <div key={callId} className="text-red-800 font-normal bg-red-100 rounded-md p-2 flex items-center gap-2">
-                                <span>Error generating image</span>
-                                <button 
-                                  onClick={onReload}
-                                  className="text-red-800 font-semibold bg-red-100 underline cursor-pointer"
-                                >
-                                  Try again
-                                </button>
-                              </div>
-                            </>
-                          ) : (
-                            <div key={callId} className="aspect-square md:max-w-[50%] rounded-md overflow-hidden relative">
-                              <button 
-                                className="cursor-pointer absolute top-2 right-2 z-10 bg-white/20 backdrop-blur-2xl p-2 rounded-md text-white transition-all duration-200 active:scale-95"
-                                onClick={() => {
-                                  const imageElement = document.getElementById(`${callId}-image`) as HTMLImageElement;
-                                  if (imageElement) {
-                                    const a = document.createElement('a');
-                                    a.href = imageElement.src;
-                                    a.download = `${toolInvocation.toolInvocation.args.prompt.toLowerCase().replace(/ /g, '-')}-${new Date().toISOString()}.png`;
-                                    a.click();
-                                  }
-                                }}
-                              >
-                                <Download className="size-4" />
-                              </button>
-                              <img
-                                id={`${callId}-image`} 
-                                src={base64ToImage((toolInvocation.toolInvocation.result as { base64Data: string }).base64Data)} 
-                                alt="Generated Image" 
-                                className="w-full h-auto object-cover"
-                              />
-                            </div>
-                          )}
-                        </>
+                        <p>asdasd</p>
                       );
                     }
                   }
@@ -124,7 +101,6 @@ export const MessageAssistant = ({
             })}
           </div>
         )}
-
 
         {sourceParts && sourceParts.length > 0 && (
           <div className="flex flex-wrap gap-1 w-full mt-2">

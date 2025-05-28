@@ -17,7 +17,8 @@ interface ConversationProps {
 };
 
 export const Conversation = ({ messages, status, error, reload, onEdit, onDelete }: ConversationProps) => {
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);  
+  console.log("Ha ocurrido un error", error);
 
   return (
     <ChatContainer
@@ -52,8 +53,8 @@ export const Conversation = ({ messages, status, error, reload, onEdit, onDelete
 
       {error && (
         <div className="flex items-center justify-center gap-2 bg-red-100 rounded-md p-2 text-red-950">
-          <p>An error occurred.</p>
-          <button type="button" onClick={() => reload()} className="font-bold">
+          <p>An error occurred. {error.message}</p>
+          <button type="button" onClick={reload} className="font-bold">
             Retry
           </button>
         </div>
