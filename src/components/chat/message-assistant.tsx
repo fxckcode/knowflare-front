@@ -1,13 +1,12 @@
 'use client';
 
 import { Message, MessageActions } from '@/components/ui/message';
-import { Check, Copy, Download } from 'lucide-react';
+import { BookMarkedIcon, Check, Copy, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { Message as MessageAISDK } from 'ai';
+import type { Message as MessageAISDK, ToolInvocation } from 'ai';
 import { Markdown } from '../ui/markdown';
 import { useState } from 'react';
-import { Source } from '../extras/icons';
-import { TextShimmer } from '../ui/text-shimmer';
+import { Source } from '../fundations/icons';
 
 type FileUIPart = {
   type: 'file';
@@ -19,12 +18,14 @@ interface MessageAssistantProps {
   message: MessageAISDK;
   parts: MessageAISDK["parts"];
   onReload: () => void;
+  onShowCanvas: (isShowing: boolean) => void;
 }
 
 export const MessageAssistant = ({
   message,
   parts,
-  onReload
+  onReload,
+  onShowCanvas
 }: MessageAssistantProps) => {
   const [copyMessage, setCopyMessage] = useState<string | null>(null);  
 
@@ -56,6 +57,24 @@ export const MessageAssistant = ({
       className="group justify-start"
     >
       <div className="max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col">
+        {message.toolInvocations?.map((toolInvocation: ToolInvocation) => {
+          const toolCallId = toolInvocation.toolCallId;
+          if (toolInvocation.toolName === 'showPromptInCanvas') {
+            return (
+              <button
+                key={toolCallId}
+                className="text-gray-500 bg-muted/50 rounded-md p-2 flex items-center gap-3 cursor-pointer"
+                onClick={() => onShowCanvas(true)}
+              >
+                <div className="w-[45px] h-[45px] rounded-md border-[1.5px] border-gray-200 flex items-center justify-center">
+                  <BookMarkedIcon className="size-5" />
+                </div>
+                <span className="text-sm">Showing prompt in canvas...</span>
+              </button>
+            );
+          }
+        })}
+
         {reasoningParts && reasoningParts.reasoning && (
           <div className="bg-transparent text-foreground">
             {reasoningParts.reasoning}

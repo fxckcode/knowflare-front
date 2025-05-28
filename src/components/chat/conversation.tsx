@@ -14,11 +14,19 @@ interface ConversationProps {
   reload: () => void;
   onEdit: (id: string, newText: string) => void;
   onDelete: (id: string) => void;
+  onShowCanvas: (isShowing: boolean) => void;
 };
 
-export const Conversation = ({ messages, status, error, reload, onEdit, onDelete }: ConversationProps) => {
-  const chatContainerRef = useRef<HTMLDivElement>(null);  
-  console.log("Ha ocurrido un error", error);
+export const Conversation = ({
+  messages,
+  status,
+  error,
+  reload,
+  onEdit,
+  onDelete,
+  onShowCanvas
+}: ConversationProps) => {
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <ChatContainer
@@ -35,7 +43,7 @@ export const Conversation = ({ messages, status, error, reload, onEdit, onDelete
               key={message.id}
               message={message}
               parts={message.parts}
-              onReload={reload}
+              onShowCanvas={onShowCanvas}
             />
           );
         }
