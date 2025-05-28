@@ -30,7 +30,7 @@ function useMediaQuery(query: string): boolean {
 export const Chat = () => {
   const searchParams = useSearchParams();
   const [isArtifactPanelOpen, setIsArtifactPanelOpen] = useState(false);
-  // const [artifactValue, setArtifactValue] = useState<string | null>(null);
+  const [artifactValue, setArtifactValue] = useState<string | null>(null);
   const { setAgent } = useAgent();
   const [agentPrompt, setAgentPrompt] = useState<Agent | null>(null);
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -72,6 +72,12 @@ export const Chat = () => {
     },
     onError: (error) => {
       console.error('Error in chat:', error);
+    },
+    onToolCall({ toolCall }) {
+      if (toolCall.toolName === 'showPromptInCanvas') {
+        setIsArtifactPanelOpen(true);
+        setArtifactValue((toolCall.args as { prompt: string }).prompt);
+      }
     }
   });
 

@@ -1,12 +1,13 @@
 'use client';
 
 import { Message, MessageActions } from '@/components/ui/message';
-import { BookMarkedIcon, Check, Copy, Download } from 'lucide-react';
+import { BookMarkedIcon, Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { Message as MessageAISDK, ToolInvocation } from 'ai';
+import type { Message as MessageAISDK } from 'ai';
 import { Markdown } from '../ui/markdown';
 import { useState } from 'react';
 import { Source } from '../fundations/icons';
+import { TextShimmer } from '../ui/text-shimmer';
 
 type FileUIPart = {
   type: 'file';
@@ -17,14 +18,13 @@ type FileUIPart = {
 interface MessageAssistantProps {
   message: MessageAISDK;
   parts: MessageAISDK["parts"];
-  onReload: () => void;
+  onReload?: () => void;
   onShowCanvas: (isShowing: boolean) => void;
 }
 
 export const MessageAssistant = ({
   message,
   parts,
-  onReload,
   onShowCanvas
 }: MessageAssistantProps) => {
   const [copyMessage, setCopyMessage] = useState<string | null>(null);  
@@ -57,7 +57,7 @@ export const MessageAssistant = ({
       className="group justify-start"
     >
       <div className="max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col">
-        {message.toolInvocations?.map((toolInvocation: ToolInvocation) => {
+        {/* {message.toolInvocations?.map((toolInvocation: ToolInvocation) => {
           const toolCallId = toolInvocation.toolCallId;
           if (toolInvocation.toolName === 'showPromptInCanvas') {
             return (
@@ -73,7 +73,7 @@ export const MessageAssistant = ({
               </button>
             );
           }
-        })}
+        })} */}
 
         {reasoningParts && reasoningParts.reasoning && (
           <div className="bg-transparent text-foreground">
@@ -96,21 +96,30 @@ export const MessageAssistant = ({
         {toolInvocationParts && toolInvocationParts.length > 0 && (
           <div className="flex flex-col gap-2">
             {toolInvocationParts.map((toolInvocation) => {
-              const callId = toolInvocation.toolInvocation.toolCallId;
+              const toolCallId = toolInvocation.toolInvocation.toolCallId;
               
               switch (toolInvocation.toolInvocation.toolName) {
-                case 'generateImageTool': {
+                case 'showPromptInCanvas': {
                   switch (toolInvocation.toolInvocation.state) {
                     case 'call':  
                       return (
-                        <p>
-                          Thinking...
-                        </p>
+                        <TextShimmer>
+                          Writing prompt...
+                        </TextShimmer>
                       );
 
                     case 'result': {
                       return (
-                        <p>asdasd</p>
+                        <button
+                          key={toolCallId}
+                          className="text-gray-500 bg-muted/50 rounded-md p-2 flex items-center gap-3 cursor-pointer"
+                          onClick={() => onShowCanvas(true)}
+                        >
+                          <div className="w-[45px] h-[45px] rounded-md border-[1.5px] border-gray-200 flex items-center justify-center">
+                            <BookMarkedIcon className="size-5" />
+                          </div>
+                          <span className="text-sm">Showing prompt in canvas...</span>
+                        </button>
                       );
                     }
                   }

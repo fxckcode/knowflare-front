@@ -43,6 +43,7 @@ export const Conversation = ({
               key={message.id}
               message={message}
               parts={message.parts}
+              onReload={reload}
               onShowCanvas={onShowCanvas}
             />
           );

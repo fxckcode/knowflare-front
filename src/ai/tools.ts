@@ -14,5 +14,5 @@ const generateImageTool = tool({
   }
 });
 
-const 
+
 export { generateImageTool };
