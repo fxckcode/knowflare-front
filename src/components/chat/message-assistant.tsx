@@ -1,7 +1,7 @@
 'use client';
 
 import { Message, MessageActions } from '@/components/ui/message';
-import { BookMarkedIcon, Check, Copy } from 'lucide-react';
+import { BookMarkedIcon, Check, Copy, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Message as MessageAISDK } from 'ai';
 import { Markdown } from '../ui/markdown';
@@ -18,14 +18,15 @@ type FileUIPart = {
 interface MessageAssistantProps {
   message: MessageAISDK;
   parts: MessageAISDK["parts"];
-  onReload?: () => void;
+  onReload: () => void;
   onShowCanvas: (isShowing: boolean) => void;
 }
 
 export const MessageAssistant = ({
   message,
   parts,
-  onShowCanvas
+  onShowCanvas,
+  onReload
 }: MessageAssistantProps) => {
   const [copyMessage, setCopyMessage] = useState<string | null>(null);  
 
@@ -147,9 +148,19 @@ export const MessageAssistant = ({
           <Button
             variant="ghost"
             size="icon"
+            className="group/item"
             onClick={() => handleCopy(message.content)}
           >
-            {copyMessage === message.content ? <Check className="text-green-500" /> : <Copy />}
+            {copyMessage === message.content ? <Check className="text-green-500" /> : <Copy className="group-hover/item:rotate-[-10deg] transition-transform duration-500"/>}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="group/item"
+            onClick={() => onReload()}
+          >
+            <RefreshCcw className="group-hover/item:rotate-180 transition-transform duration-700"/>
           </Button>
         </MessageActions>
       </div>

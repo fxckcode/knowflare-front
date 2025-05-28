@@ -57,7 +57,6 @@ export const agents: Agent[] = [
             )
         }),
         execute: async ({ prompt }) => {
-          console.log('prompt', prompt);
           return { prompt };
         }
       }

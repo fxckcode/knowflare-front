@@ -10,6 +10,8 @@ import { Models } from "@/lib/types";
 import { Globe } from "@/components/fundations/icons";
 import { cn } from "@/lib/utils";
 import { ChatRequestOptions } from "ai";
+import { usePathname } from "next/navigation";
+
 
 interface PromptTextarea {
   inputValue: string;
@@ -76,6 +78,8 @@ export const PromptTextarea = ({
     setFiles(dataTransfer.files);
   };
 
+  const isHome = usePathname() === "/";
+
   return (
     <PromptInput
       onSubmit={() => {
@@ -108,7 +112,7 @@ export const PromptTextarea = ({
       }
 
       <PromptInputTextarea
-        className="min-h-[40px] max-h-[100px] h-auto px-2 sm:px-4 leading-[24px]"
+        className="min-h-[40px] max-h-[100px] h-auto px-2 leading-[24px]"
         placeholder="Ask Idle anything"
         onKeyDown={handleKeyDown}
         value={inputValue}
@@ -117,9 +121,10 @@ export const PromptTextarea = ({
 
       <PromptInputActions className="flex justify-between items-end mt-3">
         <div className="flex items-center gap-2">
-          <PromptInputAction tooltip="Upload files">
-            <label htmlFor="file-upload" className="cursor-pointer p-2 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors duration-200">
-              <Plus className="size-5" />
+          {!isHome && (
+            <PromptInputAction tooltip="Upload files">
+              <label htmlFor="file-upload" className="cursor-pointer p-2 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors duration-200">
+                <Plus className="size-5" />
               <input
                 id="file-upload"
                 type="file"
@@ -133,8 +138,9 @@ export const PromptTextarea = ({
                 ref={fileInputRef}
                 accept="image/png,image/jpeg,image/jpg,image/webp"
               />
-            </label>
-          </PromptInputAction>
+              </label>
+            </PromptInputAction>
+          )}
           <PromptInputAction tooltip="Select Model">
             <ModelDropdown model={model} setModel={handleModelChange} />
           </PromptInputAction>

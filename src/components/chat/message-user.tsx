@@ -121,17 +121,19 @@ export const MessageUser = ({ message, onEdit, onReload, onDelete }: MessageUser
           <Button
             variant="ghost"
             size="icon"
+            className="group/item"
             onClick={() => handleCopy(message.content)}
           >
-            {copyMessage === message.content ? <Check className="text-green-500" /> : <Copy />}
+            {copyMessage === message.content ? <Check className="text-green-500" /> : <Copy className="group-hover/item:rotate-[-10deg] transition-transform duration-500"/>}
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
+            className="group/item hover:bg-red-500/10 transition-all duration-500"
             onClick={handleDelete}
           >
-            <Trash className="size-4" />
+            <Trash className="size-4 group-hover/item:text-red-500 transition-transform duration-500"/>
           </Button>
 
           <Button

@@ -15,6 +15,7 @@ const buttonVariants = cva(
           "bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90",
         outline:
           "border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
+        suggestion: "suggestion-button",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
