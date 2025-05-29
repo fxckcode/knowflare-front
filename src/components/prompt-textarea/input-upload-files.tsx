@@ -9,15 +9,15 @@ interface InputUploadFiles {
 
 export const InputUploadFiles = ({ setFiles, fileInputRef }: InputUploadFiles) => {
   return (
-    <label 
-      htmlFor="file-upload" 
-      className="chat-tools__button"
+    <label
+      htmlFor="file-upload"
+      className="chat-tools__button w-[34px] flex items-center justify-center"
     >
       <Plus className="size-4" />
       <input
         id="file-upload"
         type="file"
-        className="hidden"
+        className="hidden w-0 h-0 absolute"
         onChange={event => {
           if (event.target.files) {
             setFiles(event.target.files);

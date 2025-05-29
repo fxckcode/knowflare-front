@@ -4,11 +4,13 @@ import {
   factCheckerSystemPrompt,
   formalSystemPrompt,
   learnWithQuizzySystemPrompt,
+  n8nSystemPrompt,
   socratesSystemPrompt,
   yodaSystemPrompt
 } from '@/ai/prompts';
 import { Agent, Model, Models } from '../lib/types';
 import { z } from 'zod';
+import { n8nContext } from './contexts/n8n-context';
 
 export type AgentNames =
   | 'ai-prompt-generator'
@@ -16,7 +18,8 @@ export type AgentNames =
   | 'socrates'
   | 'quizzy'
   | 'formal'
-  | 'fact-checker';
+  | 'fact-checker'
+  | 'n8n-builder';
 
 export const models: Model[] = [
   {
@@ -79,6 +82,37 @@ export const agents: Agent[] = [
       'https://dialektika.org/wp-content/uploads/2023/05/Socrates.jpg.webp',
     agentName: 'socrates',
     systemPrompt: socratesSystemPrompt
+  },
+  {
+    name: 'n8n builder',
+    description: 'It is helpful to build workflows using n8n.',
+    image: '/images/agents/n8n-agent.png',
+    agentName: 'n8n-builder',
+    systemPrompt:
+      n8nSystemPrompt + '\n\n <n8n_context>' + n8nContext + '</n8n_context>',
+    tools: {
+      showWorkflowInCanvas: {
+        description: 'This tool is used to show a workflow in the canvas.',
+        parameters: z.object({
+          workflow: z.string()
+        }),
+        execute: async ({ workflow }) => {
+          return { workflow };
+        }
+      }
+    },
+    suggestions: [
+      {
+        suggestion: 'Automate Slack notifications',
+        prompt:
+          'Create workflow to send a message to a Slack channel when a new email is received'
+      },
+      {
+        suggestion: 'Track Strava workouts',
+        prompt:
+          'Using the Strava API, track my workouts and, if I skip too many, send me a message to my email.'
+      }
+    ]
   },
   {
     name: 'Learn with Quizzy',
