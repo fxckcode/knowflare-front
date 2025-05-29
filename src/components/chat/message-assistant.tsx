@@ -58,24 +58,6 @@ export const MessageAssistant = ({
       className="group justify-start"
     >
       <div className="max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col">
-        {/* {message.toolInvocations?.map((toolInvocation: ToolInvocation) => {
-          const toolCallId = toolInvocation.toolCallId;
-          if (toolInvocation.toolName === 'showPromptInCanvas') {
-            return (
-              <button
-                key={toolCallId}
-                className="text-gray-500 bg-muted/50 rounded-md p-2 flex items-center gap-3 cursor-pointer"
-                onClick={() => onShowCanvas(true)}
-              >
-                <div className="w-[45px] h-[45px] rounded-md border-[1.5px] border-gray-200 flex items-center justify-center">
-                  <BookMarkedIcon className="size-5" />
-                </div>
-                <span className="text-sm">Showing prompt in canvas...</span>
-              </button>
-            );
-          }
-        })} */}
-
         {reasoningParts && reasoningParts.reasoning && (
           <div className="bg-transparent text-foreground">
             {reasoningParts.reasoning}

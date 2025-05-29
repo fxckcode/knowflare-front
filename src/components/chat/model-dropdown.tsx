@@ -4,26 +4,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { Settings } from "lucide-react";
 import { models } from "@/ai/agents";
 
 interface ModelDropdownProps {
-  model: string;
   setModel: (model: string) => void;
 }
 
-export const ModelDropdown = ({ model, setModel }: ModelDropdownProps) => {
-  const setModelName = (model: string) => {
-    return models.find((m) => m.value === model);
-  };
-
+export const ModelDropdown = ({ setModel }: ModelDropdownProps) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <div className="rounded-lg flex items-center gap-2 px-2 py-2 hover:bg-brand-green-light/10 text-gray-500 cursor-pointer text-[14px] w-full">
-          {setModelName(model)?.name}
-          <ChevronDown className="size-5" />
-        </div>
+      <DropdownMenuTrigger className="chat-tools__button">
+        <Settings className="size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-w-[300px] rounded-xl">
         {models.map((model) => (

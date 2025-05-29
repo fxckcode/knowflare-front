@@ -6,7 +6,7 @@ import { Check, Copy, Pencil, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Message as MessageAISDK } from 'ai';
 import { useRef, useState } from 'react';
-import { ImagePreview } from '../modals/modal';
+import { PreviewAttachments } from '@/components/modals/preview-attachments-modal';
 
 interface MessageUserProps {
   message: MessageAISDK;
@@ -21,6 +21,9 @@ export const MessageUser = ({ message, onEdit, onReload, onDelete }: MessageUser
   const [isEditing, setIsEditing] = useState(false);
 
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const imageAttachments = message.experimental_attachments?.filter(attachment => attachment.contentType?.startsWith('image/'));
+  console.log("imageAttachments", imageAttachments);
 
   const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content);
@@ -57,23 +60,19 @@ export const MessageUser = ({ message, onEdit, onReload, onDelete }: MessageUser
       )}
     >
       <div className={cn("max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col items-end")}>
-        <div className="aspect-[16/9] rounded-md overflow-hidden max-w-[60%] md:max-w-[50%]">
-          {message.experimental_attachments
-            ?.filter(attachment =>
-              attachment.contentType?.startsWith('image/')
-            )
-            .map((attachment, index) => (
-              <ImagePreview
-                key={`${message.id}-${index}`}
-                image={attachment.url}
-              >
-                <img
-                  src={attachment.url}
-                  alt={attachment.name}
-                  className="w-full h-full object-cover cursor-pointer"
+        <div className="max-w-[60%] md:max-w-[80%] grid grid-cols-2 gap-2">
+          {imageAttachments && imageAttachments.map((attachment, index) => (
+            <PreviewAttachments
+            key={`${message.id}-${index}`}
+            image={attachment.url}
+            >
+              <img
+                src={attachment.url}
+                alt={attachment.name}
+                className="w-full h-full object-cover cursor-pointer"
                 />
-              </ImagePreview>
-            ))}
+            </PreviewAttachments>
+          ))}
         </div>
 
         {isEditing ? (

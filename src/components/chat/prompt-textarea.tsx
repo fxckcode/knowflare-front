@@ -3,7 +3,7 @@
 import { PromptInputAction, PromptInputActions, PromptInputTextarea } from "@/components/ui/prompt-input";
 import { PromptInput } from "@/components/ui/prompt-input";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Plus, Square, X } from "lucide-react";
+import { ArrowUp, Square } from "lucide-react";
 import { ModelDropdown } from "@/components/chat/model-dropdown";
 import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, useRef, useState, useEffect } from "react";
 import { Models } from "@/lib/types";
@@ -11,7 +11,8 @@ import { Globe } from "@/components/fundations/icons";
 import { cn } from "@/lib/utils";
 import { ChatRequestOptions } from "ai";
 import { usePathname } from "next/navigation";
-
+import { InputUploadFiles } from "@/components/prompt-textarea/input-upload-files";
+import { PreviewImage } from "@/components/prompt-textarea/preview-image";
 
 interface PromptTextarea {
   inputValue: string;
@@ -40,6 +41,7 @@ export const PromptTextarea = ({
   files,
   setFiles
 }: PromptTextarea) => {
+  /* eslint-disable-next-line */
   const [model, setModel] = useState(globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17);
   const isDisabled = inputValue.length === 0;
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -94,22 +96,20 @@ export const PromptTextarea = ({
       }}
       className="w-full rounded-xl pt-3"
     >
-      {files && files.length > 0 &&
-        <div className="flex items-center gap-2 pb-1.5">
-          {Array.from(files).map((file, index) => (
-            <div className="flex items-center gap-2 bg-gray-100 rounded-md px-2.5 py-1.5" key={file.name}>
-              <img
-                src={previewUrls[index]}
+      <div className="flex items-center gap-2">
+        {files && files.length > 0 &&
+          <div className="flex items-center gap-2 pb-1.5">
+            {Array.from(files).map((file, index) => (
+              <PreviewImage
+                key={file.name}
+                image={previewUrls[index]}
                 alt={file.name}
-                className="w-8 h-8 object-cover rounded border"
+                onRemove={() => handleFileRemove(file)}
               />
-              <button onClick={() => handleFileRemove(file)} className="cursor-pointer">
-                <X className="size-4 text-gray-500 hover:bg-red-300 hover:text-red-700 rounded-full p-0.5" />
-              </button>
-            </div>
-          ))}
-        </div>
-      }
+            ))}
+          </div>
+        }
+      </div>
 
       <PromptInputTextarea
         className="min-h-[40px] max-h-[100px] h-auto px-2 leading-[24px]"
@@ -121,37 +121,26 @@ export const PromptTextarea = ({
 
       <PromptInputActions className="flex justify-between items-end mt-3">
         <div className="flex items-center gap-2">
-          {!isHome && (
-            <PromptInputAction tooltip="Upload files">
-              <label htmlFor="file-upload" className="cursor-pointer p-2 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors duration-200">
-                <Plus className="size-5" />
-              <input
-                id="file-upload"
-                type="file"
-                className="hidden"
-                onChange={event => {
-                  if (event.target.files) {
-                    setFiles(event.target.files);
-                  }
-                }}
-                multiple
-                ref={fileInputRef}
-                accept="image/png,image/jpeg,image/jpg,image/webp"
-              />
-              </label>
+          <div className="chat-tools">
+            {!isHome && (
+              <PromptInputAction tooltip="Upload files">
+                <InputUploadFiles setFiles={setFiles} fileInputRef={fileInputRef} />
+              </PromptInputAction>
+            )}
+
+            <PromptInputAction tooltip="Select Model">
+              <ModelDropdown setModel={handleModelChange} />
             </PromptInputAction>
-          )}
-          <PromptInputAction tooltip="Select Model">
-            <ModelDropdown model={model} setModel={handleModelChange} />
-          </PromptInputAction>
-          <PromptInputAction tooltip="Search in the web">
-            <button
-              onClick={() => setIsSearchGrounding(prev => !prev)}
-              className={cn("cursor-pointer p-2 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors duration-200", isSearchGrounding && "text-brand-green bg-brand-green-light/10 hover:bg-brand-green-light/20 hover:text-brand-green")}
-            >
-              <Globe className="size-5" />
-            </button>
-          </PromptInputAction>
+
+            <PromptInputAction tooltip="Search in the web">
+              <button
+                onClick={() => setIsSearchGrounding(prev => !prev)}
+                className={cn("chat-tools__button", isSearchGrounding && "chat-tools__button--active")}
+              >
+                <Globe className="size-4" />
+              </button>
+            </PromptInputAction>
+          </div>
         </div>
 
         <PromptInputAction
