@@ -14,7 +14,7 @@ const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY
 });
 
-export function errorHandler(error: unknown) {
+function errorHandler(error: unknown) {
   if (error == null) {
     return 'unknown error';
   }
