@@ -1,5 +1,7 @@
 import { agents, defaultConfig } from '@/ai/agents';
 import { getFactCheckerPrompt } from '@/ai/prompts';
+import { generateImageTool } from '@/ai/tools';
+import { Models } from '@/lib/types';
 import {
   createGoogleGenerativeAI,
   GoogleGenerativeAIProviderOptions
@@ -11,6 +13,22 @@ export const maxDuration = 60;
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY
 });
+
+function errorHandler(error: unknown) {
+  if (error == null) {
+    return 'unknown error';
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return JSON.stringify(error);
+}
 
 export async function POST(req: Request) {
   try {
@@ -29,7 +47,9 @@ export async function POST(req: Request) {
 
     const systemPrompt =
       currentAgent?.systemPrompt || defaultConfig.systemPrompt;
-    const tools = currentAgent?.tools || {};
+
+    const defaultTools = { generateImageTool }; // Tools for all agents
+    const tools = { ...defaultTools, ...(currentAgent?.tools || {}) };
 
     const result = streamText({
       model: google(model, {
@@ -45,19 +65,22 @@ export async function POST(req: Request) {
       messages,
       tools,
       temperature: defaultConfig.temperature,
-      providerOptions: {
-        google: {
-          thinkingConfig: {
-            thinkingBudget: 2048
-          }
-        } satisfies GoogleGenerativeAIProviderOptions
-      }
+      ...(model !== Models.GEMINI_2_0_FLASH_EXP && {
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 2048
+            }
+          } satisfies GoogleGenerativeAIProviderOptions
+        }
+      })
     });
 
     return result.toDataStreamResponse({
       sendSources: true,
       sendReasoning: true,
-      sendUsage: true
+      sendUsage: true,
+      getErrorMessage: errorHandler
     });
   } catch (error) {
     console.error('Error in chat API:', error);

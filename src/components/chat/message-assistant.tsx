@@ -1,25 +1,35 @@
 'use client';
 
 import { Message, MessageActions } from '@/components/ui/message';
-import { BookMarkedIcon, Check, Copy } from 'lucide-react';
+import { BookMarkedIcon, Check, Copy, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { Message as MessageAISDK, ToolInvocation } from 'ai';
+import type { Message as MessageAISDK } from 'ai';
 import { Markdown } from '../ui/markdown';
 import { useState } from 'react';
 import { Source } from '../fundations/icons';
+import { TextShimmer } from '../ui/text-shimmer';
+
+type FileUIPart = {
+  type: 'file';
+  mimeType: string;
+  data: string;
+};
 
 interface MessageAssistantProps {
   message: MessageAISDK;
   parts: MessageAISDK["parts"];
+  onReload: () => void;
   onShowCanvas: (isShowing: boolean) => void;
 }
 
 export const MessageAssistant = ({
   message,
   parts,
-  onShowCanvas
+  onShowCanvas,
+  onReload
 }: MessageAssistantProps) => {
-  const [copyMessage, setCopyMessage] = useState<string | null>(null);
+  const [copyMessage, setCopyMessage] = useState<string | null>(null);  
+
 
   const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content);
@@ -40,44 +50,68 @@ export const MessageAssistant = ({
 
   const reasoningParts = parts?.find((part) => part.type === "reasoning");
 
+  const fileParts: FileUIPart | undefined = parts?.find((part) => part.type === "file");
+
   return (
     <Message
       key={message.id}
       className="group justify-start"
     >
       <div className="max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col">
-        {message.toolInvocations?.map((toolInvocation: ToolInvocation) => {
-          const toolCallId = toolInvocation.toolCallId;
-          if (toolInvocation.toolName === 'showPromptInCanvas') {
-            return (
-              <button
-                key={toolCallId}
-                className="text-gray-500 bg-muted/50 rounded-md p-2 flex items-center gap-3 cursor-pointer"
-                onClick={() => onShowCanvas(true)}
-              >
-                <div className="w-[45px] h-[45px] rounded-md border-[1.5px] border-gray-200 flex items-center justify-center">
-                  <BookMarkedIcon className="size-5" />
-                </div>
-                <span className="text-sm">Showing prompt in canvas...</span>
-              </button>
-            );
-          }
-        })}
-
         {reasoningParts && reasoningParts.reasoning && (
           <div className="bg-transparent text-foreground">
             {reasoningParts.reasoning}
           </div>
         )}
 
-        {toolInvocationParts && toolInvocationParts.length > 0 && (
+        {message.content && (
+          <Markdown className="message-content">
+            {message.content}
+          </Markdown>
+        )}
+
+        {fileParts && (
           <div className="flex flex-col gap-2">
+            <img src={`data:${fileParts.mimeType};base64,${fileParts.data}`} alt={fileParts.mimeType} />
           </div>
         )}
 
-        <Markdown className="message-content">
-          {message.content}
-        </Markdown>
+        {toolInvocationParts && toolInvocationParts.length > 0 && (
+          <div className="flex flex-col gap-2">
+            {toolInvocationParts.map((toolInvocation) => {
+              const toolCallId = toolInvocation.toolInvocation.toolCallId;
+              
+              switch (toolInvocation.toolInvocation.toolName) {
+                case 'showPromptInCanvas': {
+                  switch (toolInvocation.toolInvocation.state) {
+                    case 'call':  
+                      return (
+                        <TextShimmer>
+                          Writing prompt...
+                        </TextShimmer>
+                      );
+
+                    case 'result': {
+                      return (
+                        <button
+                          key={toolCallId}
+                          className="text-gray-500 bg-muted/50 rounded-md p-2 flex items-center gap-3 cursor-pointer"
+                          onClick={() => onShowCanvas(true)}
+                        >
+                          <div className="w-[45px] h-[45px] rounded-md border-[1.5px] border-gray-200 flex items-center justify-center">
+                            <BookMarkedIcon className="size-5" />
+                          </div>
+                          <span className="text-sm">Showing prompt in canvas...</span>
+                        </button>
+                      );
+                    }
+                  }
+                  break;
+                }
+              }
+            })}
+          </div>
+        )}
 
         {sourceParts && sourceParts.length > 0 && (
           <div className="flex flex-wrap gap-1 w-full mt-2">
@@ -96,9 +130,19 @@ export const MessageAssistant = ({
           <Button
             variant="ghost"
             size="icon"
+            className="group/item"
             onClick={() => handleCopy(message.content)}
           >
-            {copyMessage === message.content ? <Check className="text-green-500" /> : <Copy />}
+            {copyMessage === message.content ? <Check className="text-green-500" /> : <Copy className="group-hover/item:rotate-[-10deg] transition-transform duration-500"/>}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="group/item"
+            onClick={() => onReload()}
+          >
+            <RefreshCcw className="group-hover/item:rotate-180 transition-transform duration-700"/>
           </Button>
         </MessageActions>
       </div>

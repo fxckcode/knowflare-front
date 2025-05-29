@@ -1,0 +1,20 @@
+.chat-tools {
+  border-radius: 10px;
+  border: 1px solid #dbdbdb;
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+
+  button {
+    padding: 9px;
+    border-radius: 10px;
+  }
+}
+
+.chat-tools__button {
+  @apply cursor-pointer p-2 rounded-lg hover:bg-brand-green-light/10 hover:text-brand-green text-gray-500 transition-colors duration-200;
+}
+
+.chat-tools__button--active {
+  @apply bg-brand-green-light/10 text-brand-green;
+}

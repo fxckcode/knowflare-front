@@ -43,6 +43,7 @@ export const Conversation = ({
               key={message.id}
               message={message}
               parts={message.parts}
+              onReload={reload}
               onShowCanvas={onShowCanvas}
             />
           );
@@ -50,7 +51,7 @@ export const Conversation = ({
 
         return (
           <MessageUser
-            key={message.id}
+            key={`${message.id}-${message.createdAt}`}
             message={message}
             onEdit={onEdit}
             onReload={reload}
@@ -61,8 +62,8 @@ export const Conversation = ({
 
       {error && (
         <div className="flex items-center justify-center gap-2 bg-red-100 rounded-md p-2 text-red-950">
-          <p>An error occurred.</p>
-          <button type="button" onClick={() => reload()} className="font-bold">
+          <p>An error occurred. {error.message}</p>
+          <button type="button" onClick={reload} className="font-bold">
             Retry
           </button>
         </div>

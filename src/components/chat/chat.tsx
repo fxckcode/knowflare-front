@@ -11,6 +11,7 @@ import { Conversation } from './conversation';
 import { Button } from '../ui/button';
 import { motion, AnimatePresence } from 'motion/react';
 import { Canvas } from './canvas';
+import { useFileStore } from '@/stores/use-file';
 
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);
@@ -35,7 +36,8 @@ export const Chat = () => {
   const [agentPrompt, setAgentPrompt] = useState<Agent | null>(null);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isSearchGrounding, setIsSearchGrounding] = useState(false);
-  const [files, setFiles] = useState<FileList | undefined>(undefined);
+  const { files: filesFromHome } = useFileStore();
+  const [files, setFiles] = useState<FileList | undefined>(filesFromHome || undefined);
   const [suggestions, setSuggestions] = useState<Agent['suggestions']>([]);
 
   const handleSelectAgent = (agentName: string) => {
@@ -64,15 +66,19 @@ export const Chat = () => {
     error,
     reload
   } = useChat({
+    maxSteps: 1,
     body: {
       model: globalThis?.localStorage?.getItem("model") || Models.GEMINI_2_5_FLASH_PREVIEW_04_17,
       agentName: agentPrompt?.agentName || null,
       isSearchGrounding
     },
-    async onToolCall({ toolCall }) {
+    onError: (error) => {
+      console.error('Error in chat:', error);
+    },
+    onToolCall({ toolCall }) {
       if (toolCall.toolName === 'showPromptInCanvas') {
         setIsArtifactPanelOpen(true);
-        setArtifactValue((toolCall.args as unknown as { prompt: string }).prompt);
+        setArtifactValue((toolCall.args as { prompt: string }).prompt);
       }
     }
   });
@@ -83,7 +89,10 @@ export const Chat = () => {
     const isMessageExists = messages.some(message => message.content === prompt);
 
     if (!isMessageExists) {
-      append({ role: "user", content: prompt });
+      append({
+        role: "user",
+        content: prompt
+      });
     }
   }, [searchParams]);
 
@@ -173,7 +182,7 @@ export const Chat = () => {
               {suggestions.map(suggestion => (
                 <motion.div key={suggestion.prompt}>
                   <Button
-                    variant="outline"
+                    variant="suggestion"
                     className="rounded-full cursor-pointer"
                     onClick={() => setInput(suggestion.prompt)}
                   >
@@ -198,6 +207,7 @@ export const Chat = () => {
         </div>
       </motion.section>
 
+      {/* TODO: Add artifact panel */}
       <AnimatePresence>
         {isArtifactPanelOpen && (
           <Canvas

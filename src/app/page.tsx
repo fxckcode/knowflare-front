@@ -25,7 +25,7 @@ const suggestionButtonsData: SuggestionButton[] = [
   { id: 'code', text: 'Code', prompt: 'Code a custom hook for React.', icon: Code },
   { id: 'design', text: 'Design', prompt: 'Design a custom UI for a web app.', icon: Palette },
   { id: 'inspire', text: 'Get Inspired', prompt: 'Get inspired by the latest trends in AI.', icon: Sparkles },
-  { id: 'learn', text: 'Learn Gently ', prompt: 'Learn how to', icon: GraduationCap }
+  { id: 'learn', text: 'Learn Gently ', prompt: 'Learn how to cook a delicious meal.', icon: GraduationCap }
 ];
 
 export default function Home() {
@@ -108,9 +108,8 @@ export default function Home() {
             return (
               <motion.div key={buttonInfo.id} variants={buttonVariants}>
                 <Button
-                  variant="outline"
+                  variant="suggestion"
                   size="lg"
-                  className="rounded-full text-gray-600 border-gray-200 bg-white hover:bg-gray-50 text-xs h-10 px-3 flex items-center gap-1.5 shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
                   onClick={() => setInputValue(buttonInfo.prompt)}
                 >
                   <IconComponent className="h-4 w-4" />

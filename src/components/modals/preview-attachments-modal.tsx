@@ -2,16 +2,18 @@ import { ReactNode } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { cn } from "@/lib/utils";
 
-interface ImagePreviewProps {
+interface PreviewAttachmentsProps {
   image: string;
   children: ReactNode;
   className?: string;
 }
 
-export const ImagePreview = ({ image, children, className }: ImagePreviewProps) => {
+export const PreviewAttachments = ({ image, children, className }: PreviewAttachmentsProps) => {
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger className="aspect-[16/9] rounded-md overflow-hidden border" asChild>
+        {children}
+      </DialogTrigger>
       <DialogContent className={cn("p-0 rounded-xl overflow-hidden", className)}>
         <DialogHeader>
           <DialogTitle className="sr-only">Are you absolutely sure?</DialogTitle>
