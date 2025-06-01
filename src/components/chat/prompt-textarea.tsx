@@ -81,9 +81,14 @@ export const PromptTextarea = ({
   const isHome = usePathname() === "/";
 
   const handleSubmitInput = () => {
-    handleSubmit({}, {
-      experimental_attachments: files
-    });
+    if (files && files.length > 0) {
+      handleSubmit({}, {
+        experimental_attachments: files
+      });
+    } else {
+      handleSubmit();
+    }
+
     setFiles(undefined);
 
     if (fileInputRef.current) {
