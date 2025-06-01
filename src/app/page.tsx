@@ -43,12 +43,6 @@ export default function Home() {
     router.push(`/chat?prompt=${inputValue}${isSearchGrounding ? '&search=true' : ''}`);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmitChat();
-    }
-  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -88,7 +82,6 @@ export default function Home() {
           inputValue={inputValue}
           handleInputChange={handleInputChange}
           handleSubmit={handleSubmitChat}
-          handleKeyDown={handleKeyDown}
           isLoading={false}
           setIsSearchGrounding={setIsSearchGrounding}
           isSearchGrounding={isSearchGrounding}

@@ -3,9 +3,9 @@
 import { PromptInputAction, PromptInputActions, PromptInputTextarea } from "@/components/ui/prompt-input";
 import { PromptInput } from "@/components/ui/prompt-input";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Square } from "lucide-react";
+import { ArrowUp, File, Square, X } from "lucide-react";
 import { ModelDropdown } from "@/components/chat/model-dropdown";
-import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, useRef, useState, useEffect } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState, useEffect } from "react";
 import { Models } from "@/lib/types";
 import { Globe } from "@/components/fundations/icons";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,6 @@ interface PromptTextarea {
   handleSubmit: (event?: {
     preventDefault?: () => void;
   }, chatRequestOptions?: ChatRequestOptions) => void
-  handleKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
   stop?: () => void;
   setIsSearchGrounding: Dispatch<SetStateAction<boolean>>;
@@ -33,7 +32,6 @@ export const PromptTextarea = ({
   inputValue,
   handleInputChange,
   handleSubmit,
-  handleKeyDown,
   isLoading,
   stop,
   setIsSearchGrounding,
@@ -82,31 +80,56 @@ export const PromptTextarea = ({
 
   const isHome = usePathname() === "/";
 
+  const handleSubmitInput = () => {
+    if (files && files.length > 0) {
+      handleSubmit({}, {
+        experimental_attachments: files
+      });
+    } else {
+      handleSubmit();
+    }
+
+    setFiles(undefined);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <PromptInput
-      onSubmit={() => {
-        handleSubmit({}, {
-          experimental_attachments: files
-        });
-        setFiles(undefined);
-
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-      }}
+      onSubmit={handleSubmitInput}
       className="w-full rounded-xl pt-3"
     >
       <div className="flex items-center gap-2">
         {files && files.length > 0 &&
           <div className="flex items-center gap-2 pb-1.5">
-            {Array.from(files).map((file, index) => (
-              <PreviewImage
-                key={file.name}
-                image={previewUrls[index]}
-                alt={file.name}
-                onRemove={() => handleFileRemove(file)}
-              />
-            ))}
+            {Array.from(files).map((file, index) => {
+              if (file.type.startsWith('image/')) {
+                return (
+                  <PreviewImage
+                    key={file.name}
+                    image={previewUrls[index]}
+                    alt={file.name}
+                    onRemove={() => handleFileRemove(file)}
+                  />
+                );
+              } 
+
+              if (file.type.startsWith('application/pdf')) {
+                return (
+                  <div key={file.name} className="flex items-center gap-1 bg-gray-100 rounded-md p-1 relative">
+                    <div className="w-[35px] h-[35px] rounded-md flex items-center justify-center">
+                      <File className="size-5 text-gray-500 " />
+                    </div>
+                    <span className="text-sm text-gray-500 font-semibold max-w-[150px] truncate mr-1">{file.name}</span>
+                    <button onClick={() => handleFileRemove(file)} className="cursor-pointer absolute -top-1 -right-1 rounded-full bg-gray-100">
+                      <X className="size-4 text-gray-500 hover:bg-red-300 hover:text-red-700 rounded-full p-0.5" />
+                    </button>
+                  </div>
+                );
+              }
+            })}
           </div>
         }
       </div>
@@ -114,8 +137,8 @@ export const PromptTextarea = ({
       <PromptInputTextarea
         className="min-h-[40px] max-h-[100px] h-auto px-2 leading-[24px]"
         placeholder="Ask Idle anything"
-        onKeyDown={handleKeyDown}
         value={inputValue}
+        disableAutosize={true}
         onChange={handleInputChange}
       />
 
@@ -150,7 +173,7 @@ export const PromptTextarea = ({
             variant="default"
             size="icon"
             className="h-9 w-9 bg-brand-green rounded-lg hover:bg-brand-green-light cursor-pointer disabled:cursor-not-allowed"
-            onClick={isLoading ? stop : handleSubmit}
+            onClick={isLoading ? stop : handleSubmitInput}
             disabled={isDisabled}
           >
             {isLoading ? (

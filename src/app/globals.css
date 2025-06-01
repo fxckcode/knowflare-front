@@ -203,6 +203,22 @@
   li {
     @apply ml-6 list-disc;
   }
+
+  table {
+    @apply text-sm;
+
+    thead {
+      @apply bg-gray-100;
+    }
+
+    tr {
+      @apply border-b border-gray-200;
+    }
+
+    th, td {
+      @apply p-2;
+    }
+  }
 }
 
 @keyframes moveOrbGradient {
