@@ -5,7 +5,7 @@ import { PromptInput } from "@/components/ui/prompt-input";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, Square } from "lucide-react";
 import { ModelDropdown } from "@/components/chat/model-dropdown";
-import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, useRef, useState, useEffect } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState, useEffect, KeyboardEvent } from "react";
 import { Models } from "@/lib/types";
 import { Globe } from "@/components/fundations/icons";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,6 @@ interface PromptTextarea {
   handleSubmit: (event?: {
     preventDefault?: () => void;
   }, chatRequestOptions?: ChatRequestOptions) => void
-  handleKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
   stop?: () => void;
   setIsSearchGrounding: Dispatch<SetStateAction<boolean>>;
@@ -33,7 +32,6 @@ export const PromptTextarea = ({
   inputValue,
   handleInputChange,
   handleSubmit,
-  handleKeyDown,
   isLoading,
   stop,
   setIsSearchGrounding,
@@ -82,18 +80,27 @@ export const PromptTextarea = ({
 
   const isHome = usePathname() === "/";
 
+  const handleSubmitInput = () => {
+    handleSubmit({}, {
+      experimental_attachments: files
+    });
+    setFiles(undefined);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSubmitInput();
+    }
+  };
+
   return (
     <PromptInput
-      onSubmit={() => {
-        handleSubmit({}, {
-          experimental_attachments: files
-        });
-        setFiles(undefined);
-
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-      }}
+      onSubmit={handleSubmitInput}
       className="w-full rounded-xl pt-3"
     >
       <div className="flex items-center gap-2">
@@ -116,6 +123,7 @@ export const PromptTextarea = ({
         placeholder="Ask Idle anything"
         onKeyDown={handleKeyDown}
         value={inputValue}
+        disableAutosize={true}
         onChange={handleInputChange}
       />
 

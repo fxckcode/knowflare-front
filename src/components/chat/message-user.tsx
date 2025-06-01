@@ -23,7 +23,6 @@ export const MessageUser = ({ message, onEdit, onReload, onDelete }: MessageUser
   const contentRef = useRef<HTMLDivElement>(null);
 
   const imageAttachments = message.experimental_attachments?.filter(attachment => attachment.contentType?.startsWith('image/'));
-  console.log("imageAttachments", imageAttachments);
 
   const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content);
@@ -60,11 +59,11 @@ export const MessageUser = ({ message, onEdit, onReload, onDelete }: MessageUser
       )}
     >
       <div className={cn("max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col items-end")}>
-        <div className="max-w-[60%] md:max-w-[80%] grid grid-cols-2 gap-2">
+        <div className={cn("max-w-[60%] md:max-w-[80%] grid gap-2", imageAttachments && imageAttachments.length > 1 ? "grid-cols-2" : "grid-cols-1")}>
           {imageAttachments && imageAttachments.map((attachment, index) => (
             <PreviewAttachments
-            key={`${message.id}-${index}`}
-            image={attachment.url}
+              key={`${message.id}-${index}`}
+              image={attachment.url}
             >
               <img
                 src={attachment.url}
