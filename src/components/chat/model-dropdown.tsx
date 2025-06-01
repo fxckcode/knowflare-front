@@ -45,6 +45,6 @@ export const ModelDropdown = ({ setModel }: ModelDropdownProps) => {
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
-    </DropdownMenu >
+    </DropdownMenu>
   );
 };

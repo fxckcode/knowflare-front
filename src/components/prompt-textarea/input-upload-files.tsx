@@ -1,6 +1,14 @@
-import { Plus } from "lucide-react";
-import { RefObject, SetStateAction } from "react";
+"use client";
+
+import { File, Image, Plus } from "lucide-react";
+import { RefObject, SetStateAction, useState } from "react";
 import { Dispatch } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 interface InputUploadFiles {
   setFiles: Dispatch<SetStateAction<FileList | undefined>>;
@@ -8,12 +16,18 @@ interface InputUploadFiles {
 }
 
 export const InputUploadFiles = ({ setFiles, fileInputRef }: InputUploadFiles) => {
+  const validFiles = ["image/png,image/jpeg,image/jpg,image/webp", "application/pdf"];
+  const [selectedTypeFiles, setSelectedTypeFiles] = useState<string>(validFiles[0]);
+
+  const handleClick = (type: 'images' | 'files') => {
+    setSelectedTypeFiles(type === 'images' ? validFiles[0] : validFiles[1]);
+    setTimeout(() => {
+      fileInputRef.current?.click();
+    }, 100);
+  };
+
   return (
-    <label
-      htmlFor="file-upload"
-      className="chat-tools__button w-[34px] flex items-center justify-center"
-    >
-      <Plus className="size-4" />
+    <>
       <input
         id="file-upload"
         type="file"
@@ -25,8 +39,27 @@ export const InputUploadFiles = ({ setFiles, fileInputRef }: InputUploadFiles) =
         }}
         multiple
         ref={fileInputRef}
-        accept="image/png,image/jpeg,image/jpg,image/webp"
+        accept={selectedTypeFiles}
       />
-    </label>
+      <DropdownMenu>
+        <DropdownMenuTrigger className="chat-tools__button">
+          <Plus className="size-4" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="max-w-[300px] rounded-xl">
+          <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => handleClick('images')}>
+            <Image className="size-4" />
+            <span>
+              Upload images
+            </span>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => handleClick('files')}>
+            <File className="size-4" />
+            <span>
+              Upload files
+            </span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };
