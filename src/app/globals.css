@@ -168,7 +168,7 @@
 }
 
 .max-w-chat {
-  @apply mx-auto max-w-[760px] px-4 sm:px-6 md:px-0;
+  @apply mx-auto max-w-[1024px] px-4 sm:px-6 md:px-0;
 }
 
 @layer utilities {

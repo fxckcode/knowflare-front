@@ -9,9 +9,9 @@ import "./globals.css";
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Idle",
+  title: "KnowFlare",
   description: "Your AI assistant for all your needs.",
-  applicationName: "Idle",
+  applicationName: "KnowFlare",
   authors: [
     {
       name: "Alfonso Chavarro",
@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   keywords: ["AI", "Assistant", "Idle", "Copilot", "Copywriting", "Copywriting Assistant", "Copywriting Copilot", "Copywriting Assistant", "Copywriting Copilot", "Yoda", "Socrates Agent", "N8N Agent"],
   robots: "index, follow",
   openGraph: {
-    title: "Idle",
+    title: "KnowFlare",
     description: "Your AI assistant for all your needs.",
-    siteName: "Idle",
+    siteName: "KnowFlare",
     locale: "en_US",
     type: "website"
   }
@@ -41,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={montserrat.className}>
+      <body className={`${montserrat.className}`}>
         <Navbar />
         <ViewTransition>
           <main className="overflow-hidden">

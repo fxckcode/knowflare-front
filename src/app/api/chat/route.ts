@@ -30,6 +30,17 @@ function errorHandler(error: unknown) {
   return JSON.stringify(error);
 }
 
+async function getRetriever(query: string) {
+  const formData = new FormData();
+  formData.append('query', query);
+  const response = await fetch(`http://localhost:3333/retriever`, {
+    method: 'POST',
+    body: formData
+  });
+
+  return await response.json();
+}
+
 export async function POST(req: Request) {
   try {
     const { messages, model, agentName, isSearchGrounding } = await req.json();
@@ -45,8 +56,12 @@ export async function POST(req: Request) {
       });
     }
 
-    const systemPrompt =
-      currentAgent?.systemPrompt || defaultConfig.systemPrompt;
+    const contextRag = await getRetriever(messages[messages.length - 1].content);
+
+    const systemPromptFinalPart = `Contexto: ${contextRag.response}`;
+
+    let systemPrompt = defaultConfig.systemPrompt;
+    systemPrompt += `\n\n${systemPromptFinalPart}`;
 
     const defaultTools = { generateImageTool }; // Tools for all agents
     const tools = { ...defaultTools, ...(currentAgent?.tools || {}) };

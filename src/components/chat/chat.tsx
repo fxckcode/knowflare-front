@@ -98,7 +98,7 @@ export const Chat = () => {
 
   useEffect(() => {
     const agentName = searchParams.get("agent");
-    document.title = agentName ? `Idle - Talking with ${agentName}` : 'Idle - Chat';
+    document.title = agentName ? `KnowFlare - Talking with ${agentName}` : 'KnowFlare - Chat';
 
   }, [document.title, searchParams]);
 

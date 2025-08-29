@@ -136,7 +136,7 @@ export const PromptTextarea = ({
 
       <PromptInputTextarea
         className="min-h-[40px] max-h-[100px] h-auto px-2 leading-[24px]"
-        placeholder="Ask Idle anything"
+        placeholder="Pregunta algo o escribe un mensaje..."
         value={inputValue}
         disableAutosize={true}
         onChange={handleInputChange}
@@ -145,24 +145,7 @@ export const PromptTextarea = ({
       <PromptInputActions className="flex justify-between items-end mt-3">
         <div className="flex items-center gap-2">
           <div className="chat-tools">
-            {!isHome && (
-              <PromptInputAction tooltip="Upload files">
-                <InputUploadFiles setFiles={setFiles} fileInputRef={fileInputRef} />
-              </PromptInputAction>
-            )}
-
-            <PromptInputAction tooltip="Select Model">
-              <ModelDropdown setModel={handleModelChange} />
-            </PromptInputAction>
-
-            <PromptInputAction tooltip="Search in the web">
-              <button
-                onClick={() => setIsSearchGrounding(prev => !prev)}
-                className={cn("chat-tools__button", isSearchGrounding && "chat-tools__button--active")}
-              >
-                <Globe className="size-4" />
-              </button>
-            </PromptInputAction>
+      
           </div>
         </div>
 

@@ -73,7 +73,7 @@ export default function Home() {
       <div className="flex flex-col items-center gap-5 mb-10">
         <div className="rounded-xl h-[45px] w-[45px] animated-green-orb"></div>
         <h1 className="text-3xl text-gray-800 font-medium tracking-tight leading-[40px]">
-          What&apos;s on your mind?
+          ¿Qué vamos a aprender hoy?
         </h1>
       </div>
 
@@ -88,30 +88,6 @@ export default function Home() {
           files={files}
           setFiles={setFiles}
         />
-
-        {/* Suggestion Buttons */}
-        <motion.div
-          className="flex flex-wrap justify-center gap-2 mt-4"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {suggestionButtonsData.map((buttonInfo) => {
-            const IconComponent = buttonInfo.icon;
-            return (
-              <motion.div key={buttonInfo.id} variants={buttonVariants}>
-                <Button
-                  variant="suggestion"
-                  size="lg"
-                  onClick={() => setInputValue(buttonInfo.prompt)}
-                >
-                  <IconComponent className="h-4 w-4" />
-                  {buttonInfo.text}
-                </Button>
-              </motion.div>
-            );
-          })}
-        </motion.div>
       </div>
     </div>
   );

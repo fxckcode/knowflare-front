@@ -13,8 +13,8 @@ export const NavLogo = () => {
     <nav className="w-[200px]">
       <Link href="/">
         <span className="text-xl font-medium select-none text-gray-500 flex items-center gap-2">
-          Idle
-          <span className="text-gray-500 border border-gray-500 rounded-full px-2 py-1 text-xs">Experimental</span>
+          KnowFlare
+          <span className="text-gray-500 border border-gray-500 rounded-full px-2 py-1 text-xs">Beta</span>
         </span>
       </Link>
     </nav>
