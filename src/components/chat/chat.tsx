@@ -1,17 +1,19 @@
 "use client";
 
-import { PromptTextarea } from '@/components/chat/prompt-textarea';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { useSearchParams } from 'next/navigation';
 import { Agent, Models } from '@/lib/types';
 import { useAgent } from '@/stores/use-agent';
 import { agents } from '@/ai/agents';
-import { Conversation } from './conversation';
-import { Button } from '../ui/button';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas } from './canvas';
 import { useFileStore } from '@/stores/use-file';
+import { MessageBubble } from './MessageBubble';
+import { ChatInput } from './ChatInput';
+import { Suggestions } from './Suggestions';
+import { Welcome } from './Welcome';
+import { ChatContainer } from '../ui/chat-container';
 
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);
@@ -61,6 +63,7 @@ export const Chat = () => {
     handleInputChange,
     handleSubmit,
     status,
+    isLoading,
     append,
     stop,
     error,
@@ -135,79 +138,89 @@ export const Chat = () => {
     [messages, setMessages]
   );
 
-  const chatVariants = {
-    open: {
-      width: isMobile ? "0%" : "40%",
-      padding: isMobile ? "0px" : "0 16px",
-      opacity: isMobile ? 0 : 1,
-      transition: { duration: isMobile ? 0.3 : 0.5, delay: isMobile && isArtifactPanelOpen ? 0 : 0.2 }
-    },
-    closed: {
-      width: "100%",
-      padding: "0 16px",
-      opacity: 1,
-      transition: { duration: 0.5, delay: isMobile && !isArtifactPanelOpen ? 0.2 : 0 }
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+
+  const scrollToBottom = useCallback(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAtBottom) {
+      scrollToBottom();
+    }
+  }, [messages, isAtBottom, scrollToBottom]);
+
+  const handleScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+      const atBottom = scrollHeight - scrollTop <= clientHeight + 10;
+      setIsAtBottom(atBottom);
     }
   };
 
-  const panelTransition = {
-    type: "spring",
-    stiffness: 120,
-    damping: 20,
-    duration: 0.5
+  const chatVariants = {
+    open: { width: isMobile ? "0%" : "40%", opacity: isMobile ? 0 : 1 },
+    closed: { width: "100%", opacity: 1 }
   };
 
+  const panelTransition = { type: "spring", stiffness: 120, damping: 20, duration: 0.5 };
+
   return (
-    <div className="flex w-full h-[calc(100dvh-72px)] overflow-hidden">
+    <div className="flex w-full h-[calc(100dvh-72px)] overflow-hidden bg-background">
       <motion.section
-        className="flex flex-col items-stretch h-full relative"
+        className="flex flex-col h-full relative"
         variants={chatVariants}
         initial="closed"
         animate={isArtifactPanelOpen ? "open" : "closed"}
         transition={panelTransition}
       >
-        <div className="w-full max-w-chat mx-auto flex flex-col flex-1 h-full pb-[16px] overflow-hidden !px-0 sm:px-4">
-          <Conversation
-            messages={messages}
-            status={status}
-            error={error}
-            reload={reload}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onShowCanvas={setIsArtifactPanelOpen}
-          />
+        <div className="flex-1 flex flex-col overflow-hidden">
+            <ChatContainer
+                ref={chatContainerRef}
+                onScroll={handleScroll}
+                className="flex-1 space-y-4 p-4 scroll-smooth"
+            >
+                {messages.length === 0 ? (
+                    <Welcome />
+                ) : (
+                    messages.map(m => (
+                        <MessageBubble
+                            key={m.id}
+                            message={m}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                            onReload={reload}
+                            onShowCanvas={setIsArtifactPanelOpen}
+                        />
+                    ))
+                )}
+                 {isLoading && (
+                    <MessageBubble
+                        message={{ id: 'thinking', role: 'assistant', content: 'Thinking...' }}
+                    />
+                )}
+            </ChatContainer>
 
-          {messages.length < 1 && suggestions && (
-            <motion.div className="flex gap-[16px] mb-4 flex-col md:flex-row">
-              {suggestions.map(suggestion => (
-                <motion.div key={suggestion.prompt}>
-                  <Button
-                    variant="suggestion"
-                    className="rounded-full cursor-pointer"
-                    onClick={() => setInput(suggestion.prompt)}
-                  >
-                    {suggestion.suggestion}
-                  </Button>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-
-          <PromptTextarea
-            inputValue={input}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            isLoading={status === 'submitted' || status === 'streaming'}
-            stop={stop}
-            setIsSearchGrounding={setIsSearchGrounding}
-            isSearchGrounding={isSearchGrounding}
-            files={files}
-            setFiles={setFiles}
-          />
+            <div className="w-full max-w-2xl mx-auto px-4 pb-4">
+                 {messages.length === 0 && (
+                    <Suggestions suggestions={suggestions} onSuggestionClick={setInput} />
+                 )}
+                <ChatInput
+                    inputValue={input}
+                    handleInputChange={handleInputChange}
+                    handleSubmit={handleSubmit}
+                    isLoading={isLoading}
+                    stop={stop}
+                    files={files}
+                    setFiles={setFiles}
+                />
+            </div>
         </div>
       </motion.section>
 
-      {/* TODO: Add artifact panel */}
       <AnimatePresence>
         {isArtifactPanelOpen && (
           <Canvas
