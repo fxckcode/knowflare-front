@@ -175,6 +175,7 @@ export const Chat = () => {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onShowCanvas={setIsArtifactPanelOpen}
+            agentName={agentPrompt?.agentName}
           />
 
           {messages.length < 1 && suggestions && (

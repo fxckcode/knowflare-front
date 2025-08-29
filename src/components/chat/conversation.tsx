@@ -1,11 +1,11 @@
 "use client";
 
-import { TextShimmer } from "@/components/ui/text-shimmer";
 import { ChatContainer } from "@/components/ui/chat-container";
 import { MessageUser } from "./message-user";
 import { MessageAssistant } from "./message-assistant";
 import { Message } from "ai";
 import { useRef } from "react";
+import { ThinkingIndicator } from "./indicators/thinking-indicator";
 
 interface ConversationProps {
   messages: Message[];
@@ -15,6 +15,7 @@ interface ConversationProps {
   onEdit: (id: string, newText: string) => void;
   onDelete: (id: string) => void;
   onShowCanvas: (isShowing: boolean) => void;
+  agentName?: string;
 };
 
 export const Conversation = ({
@@ -24,7 +25,8 @@ export const Conversation = ({
   reload,
   onEdit,
   onDelete,
-  onShowCanvas
+  onShowCanvas,
+  agentName
 }: ConversationProps) => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +47,7 @@ export const Conversation = ({
               parts={message.parts}
               onReload={reload}
               onShowCanvas={onShowCanvas}
+              agentName={agentName}
             />
           );
         }
@@ -69,13 +72,7 @@ export const Conversation = ({
         </div>
       )}
 
-      {status === "submitted" && messages.length > 0 && (
-        <div className="group min-h-scroll-anchor flex w-full max-w-3xl flex-col items-start gap-2 px-2 pb-2 mx-auto">
-          <TextShimmer className="font-mono text-sm" duration={3}>
-            Thinking...
-          </TextShimmer>
-        </div>
-      )}
+      {status === "submitted" && messages.length > 0 && <ThinkingIndicator />}
     </ChatContainer>
   );
 };

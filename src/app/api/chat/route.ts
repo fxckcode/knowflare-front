@@ -1,6 +1,6 @@
 import { agents, defaultConfig } from '@/ai/agents';
 import { getFactCheckerPrompt } from '@/ai/prompts';
-import { generateImageTool } from '@/ai/tools';
+import { generateImageTool, generateReportTool, showPromptInCanvas, visualizeDataTool } from '@/ai/tools';
 import { Models } from '@/lib/types';
 import {
   createGoogleGenerativeAI,
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
     let systemPrompt = defaultConfig.systemPrompt;
     systemPrompt += `\n\n${systemPromptFinalPart}`;
 
-    const defaultTools = { generateImageTool }; // Tools for all agents
+    const defaultTools = { generateImageTool, generateReportTool, showPromptInCanvas, visualizeDataTool }; // Tools for all agents
     const tools = { ...defaultTools, ...(currentAgent?.tools || {}) };
 
     const result = streamText({

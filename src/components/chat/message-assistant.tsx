@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import type { Message as MessageAISDK } from 'ai';
 import { Markdown } from '../ui/markdown';
 import { useState } from 'react';
+import { GenerateReportTool } from './tools/generate-report';
+import { VisualizeDataTool } from './tools/visualize-data';
 import { Source } from '../fundations/icons';
 import { TextShimmer } from '../ui/text-shimmer';
 
@@ -20,13 +22,15 @@ interface MessageAssistantProps {
   parts: MessageAISDK["parts"];
   onReload: () => void;
   onShowCanvas: (isShowing: boolean) => void;
+  agentName?: string;
 }
 
 export const MessageAssistant = ({
   message,
   parts,
   onShowCanvas,
-  onReload
+  onReload,
+  agentName
 }: MessageAssistantProps) => {
   const [copyMessage, setCopyMessage] = useState<string | null>(null);  
 
@@ -58,6 +62,11 @@ export const MessageAssistant = ({
       className="group justify-start"
     >
       <div className="max-w-full flex-1 sm:max-w-[75%] space-y-2 flex flex-col">
+        {agentName && (
+          <div className="text-xs font-semibold text-gray-500 bg-gray-100 rounded-full px-2 py-1 self-start">
+            {agentName}
+          </div>
+        )}
         {reasoningParts && reasoningParts.reasoning && (
           <div className="bg-transparent text-foreground">
             {reasoningParts.reasoning}
@@ -107,6 +116,12 @@ export const MessageAssistant = ({
                     }
                   }
                   break;
+                }
+                case 'generateReport': {
+                  return <GenerateReportTool key={toolCallId} />;
+                }
+                case 'visualizeData': {
+                  return <VisualizeDataTool key={toolCallId} onShowCanvas={onShowCanvas} />;
                 }
               }
             })}
